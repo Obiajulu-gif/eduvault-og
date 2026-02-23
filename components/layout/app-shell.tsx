@@ -34,8 +34,8 @@ const primaryNav = [
 ];
 
 const marketNav = [
-  { href: "/marketplace", label: "Browse Prompts", icon: Store },
-  { href: "/marketplace/my-prompts", label: "My Prompts", icon: BookOpen },
+  { href: "/dashboard/marketplace", label: "Browse Prompts", icon: Store },
+  { href: "/dashboard/marketplace/my-prompts", label: "My Prompts", icon: BookOpen },
   { href: "/creator/publish", label: "Creator Tool", icon: Sparkles },
 ];
 

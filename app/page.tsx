@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import {
   ArrowRight,
   BookOpenCheck,
@@ -150,21 +152,35 @@ function Brand() {
 }
 
 export default function HomePage() {
+  const router = useRouter();
   const { openConnectModal } = useConnectModal();
   const { address, isConnected } = useAccount();
   const chainId = useChainId();
   const { switchChain, isPending: switching } = useSwitchChain();
   const wrongChain = isConnected && chainId !== targetChainId;
+  const [pendingDashboardRedirect, setPendingDashboardRedirect] = useState(false);
+
+  useEffect(() => {
+    if (pendingDashboardRedirect && isConnected && !wrongChain) {
+      setPendingDashboardRedirect(false);
+      router.push("/overview");
+    }
+  }, [isConnected, pendingDashboardRedirect, router, wrongChain]);
 
   const handleWalletAction = () => {
     if (!isConnected) {
+      setPendingDashboardRedirect(true);
       openConnectModal?.();
       return;
     }
 
     if (wrongChain) {
+      setPendingDashboardRedirect(true);
       switchChain({ chainId: targetChainId });
+      return;
     }
+
+    router.push("/overview");
   };
 
   const walletButtonLabel = !isConnected
@@ -179,15 +195,15 @@ export default function HomePage() {
         <div className="mx-auto flex h-[68px] w-full max-w-[1240px] items-center justify-between px-4 md:px-8">
           <Brand />
           <nav className="hidden items-center gap-8 text-sm font-semibold text-[#47526f] md:flex">
-            <a href="#home" className="hover:text-[#7e2df8]">
+            <Link href="/" className="hover:text-[#7e2df8]">
               Home
-            </a>
-            <a href="#marketplace" className="hover:text-[#7e2df8]">
+            </Link>
+            <Link href="/marketplace" className="hover:text-[#7e2df8]">
               Marketplace
-            </a>
-            <a href="#verify" className="hover:text-[#7e2df8]">
+            </Link>
+            <Link href="/verify" className="hover:text-[#7e2df8]">
               Verify
-            </a>
+            </Link>
             <a href="#contact" className="hover:text-[#7e2df8]">
               Contact
             </a>

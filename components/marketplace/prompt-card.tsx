@@ -56,7 +56,7 @@ export function PromptCard({ prompt }: { prompt: PromptListing }) {
             <p className="text-[36px] font-black leading-none text-[#1a2238]">{price} ETH</p>
           </div>
           <Button asChild className="h-10 min-w-[138px]">
-            <Link href={`/marketplace/${prompt.promptId}`}>View Details</Link>
+            <Link href={`/dashboard/marketplace/${prompt.promptId}`}>View Details</Link>
           </Button>
         </div>
       </CardContent>
