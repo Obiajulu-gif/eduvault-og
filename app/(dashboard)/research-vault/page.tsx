@@ -61,7 +61,7 @@ export default function ResearchVaultPage() {
             <div className="rounded-2xl border border-dashed border-[#d7ddea] bg-[#fbfdff] p-8 text-center">
               <p className="text-lg font-semibold text-[#60708d]">No licensed prompts found yet.</p>
               <Button className="mt-3" asChild>
-                <Link href="/marketplace">Browse Marketplace</Link>
+                <Link href="/dashboard/marketplace">Browse Marketplace</Link>
               </Button>
             </div>
           ) : (

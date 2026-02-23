@@ -115,7 +115,7 @@ export default function PublishPromptPage() {
       if (receipt.status !== "success") throw new Error("Listing transaction reverted");
 
       toast.success("Prompt published to marketplace");
-      router.push("/marketplace");
+      router.push("/dashboard/marketplace");
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Publish failed");
     } finally {
