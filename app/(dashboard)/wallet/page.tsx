@@ -22,15 +22,15 @@ export default function WalletPage() {
 
   return (
     <div className="space-y-5">
-      <h1 className="text-[56px] font-black leading-none">Wallet Management</h1>
+      <h1 className="text-4xl font-black leading-tight text-[#151f36] md:text-[44px]">Wallet Management</h1>
 
       <div className="grid gap-4 xl:grid-cols-[1.8fr_1fr]">
         <Card className="border-[#e4eaf4]">
           <CardContent className="space-y-5 p-6">
             <div className="space-y-1">
-              <p className="text-sm font-semibold text-[#7d88a2]">Total Balance</p>
-              <p className="text-[78px] font-black leading-none">{Number(balance?.formatted ?? 0).toFixed(2)} ETH</p>
-              <p className="text-xl font-semibold text-[#96a0b7]">≈ ${usdValue.toLocaleString(undefined, { maximumFractionDigits: 2 })} USD</p>
+              <p className="text-xs font-semibold uppercase tracking-wide text-[#7d88a2]">Total Balance</p>
+              <p className="text-5xl font-black leading-none text-[#151f36] md:text-[58px]">{Number(balance?.formatted ?? 0).toFixed(2)} ETH</p>
+              <p className="text-base font-semibold text-[#96a0b7]">~ ${usdValue.toLocaleString(undefined, { maximumFractionDigits: 2 })} USD</p>
             </div>
             <div className="flex flex-wrap gap-3">
               <Button>+ Add Funds</Button>
@@ -42,7 +42,7 @@ export default function WalletPage() {
         <Card className="border-[#e4eaf4]">
           <CardContent className="space-y-3 p-5">
             <div className="flex items-center justify-between">
-              <h2 className="text-[32px] font-black">Connected Wallets</h2>
+              <h2 className="text-2xl font-black text-[#1a2338] md:text-[28px]">Connected Wallets</h2>
               <Badge>2 Active</Badge>
             </div>
 
@@ -73,7 +73,7 @@ export default function WalletPage() {
 
       <Card className="border-[#f6d3d2] bg-[#fff2f1]">
         <CardContent className="space-y-2 p-4">
-          <p className="text-[28px] font-black text-[#b42318]">Security Recommendation</p>
+          <p className="text-xl font-black text-[#b42318] md:text-2xl">Security Recommendation</p>
           <p className="text-base text-[#cf4b41]">
             Your wallet is currently the primary connection. We recommend enabling 2FA in account settings for an extra layer of protection.
           </p>

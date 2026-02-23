@@ -23,9 +23,8 @@ import {
   Youtube,
 } from "lucide-react";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
-import { useAccount, useChainId, useSwitchChain } from "wagmi";
+import { useAccount, useChainId, useDisconnect, useSwitchChain } from "wagmi";
 import { getClientEnv } from "@/lib/env";
-import { shortAddress } from "@/lib/utils";
 
 const processCards = [
   {
@@ -154,7 +153,8 @@ function Brand() {
 export default function HomePage() {
   const router = useRouter();
   const { openConnectModal } = useConnectModal();
-  const { address, isConnected } = useAccount();
+  const { isConnected } = useAccount();
+  const { disconnect } = useDisconnect();
   const chainId = useChainId();
   const { switchChain, isPending: switching } = useSwitchChain();
   const wrongChain = isConnected && chainId !== targetChainId;
@@ -163,7 +163,7 @@ export default function HomePage() {
   useEffect(() => {
     if (pendingDashboardRedirect && isConnected && !wrongChain) {
       setPendingDashboardRedirect(false);
-      router.push("/overview");
+      router.push("/dashboard");
     }
   }, [isConnected, pendingDashboardRedirect, router, wrongChain]);
 
@@ -180,14 +180,14 @@ export default function HomePage() {
       return;
     }
 
-    router.push("/overview");
+    router.push("/dashboard");
   };
 
   const walletButtonLabel = !isConnected
     ? "Connect 0G Galileo"
     : wrongChain
       ? (switching ? "Switching..." : "Switch to 0G Galileo")
-      : shortAddress(address, 4);
+      : "Go to Dashboard";
 
   return (
     <div className="min-h-screen bg-[#f8faff] text-[#121b32]">
@@ -208,15 +208,34 @@ export default function HomePage() {
               Contact
             </a>
           </nav>
-          <div className="flex items-center gap-4">
-            <button
-              type="button"
-              onClick={handleWalletAction}
-              className="rounded-[10px] bg-[#7e2df8] px-4 py-2 text-sm font-bold text-white shadow-[0_14px_24px_-16px_rgba(126,45,248,0.95)] disabled:opacity-70"
-              disabled={switching}
-            >
-              {walletButtonLabel}
-            </button>
+          <div className="flex items-center gap-3">
+            {isConnected && !wrongChain ? (
+              <>
+                <button
+                  type="button"
+                  onClick={() => router.push("/dashboard")}
+                  className="rounded-[10px] bg-[#7e2df8] px-4 py-2 text-sm font-bold text-white shadow-[0_14px_24px_-16px_rgba(126,45,248,0.95)]"
+                >
+                  Dashboard
+                </button>
+                <button
+                  type="button"
+                  onClick={() => disconnect()}
+                  className="rounded-[10px] border border-[#d5deed] bg-white px-4 py-2 text-sm font-bold text-[#24314f]"
+                >
+                  Disconnect Wallet
+                </button>
+              </>
+            ) : (
+              <button
+                type="button"
+                onClick={handleWalletAction}
+                className="rounded-[10px] bg-[#7e2df8] px-4 py-2 text-sm font-bold text-white shadow-[0_14px_24px_-16px_rgba(126,45,248,0.95)] disabled:opacity-70"
+                disabled={switching}
+              >
+                {walletButtonLabel}
+              </button>
+            )}
           </div>
         </div>
       </header>

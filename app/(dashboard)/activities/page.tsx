@@ -25,16 +25,16 @@ const feed = [
 export default function ActivitiesPage() {
   return (
     <div className="space-y-5">
-      <h1 className="text-[56px] font-black leading-none">Activities</h1>
+      <h1 className="text-4xl font-black leading-tight text-[#151f36] md:text-[44px]">Activities</h1>
       <Card className="border-[#e4eaf4]">
         <CardContent className="space-y-3 p-5">
           {feed.map((item) => (
             <div key={item.title} className="rounded-xl border border-[#e4eaf4] bg-white p-4">
               <div className="flex flex-wrap items-center justify-between gap-2">
-                <p className="text-[28px] font-black leading-none text-[#1f2941]">{item.title}</p>
+                <p className="text-xl font-black leading-tight text-[#1f2941] md:text-2xl">{item.title}</p>
                 <Badge variant={item.status === "Success" ? "secondary" : "warning"}>{item.status}</Badge>
               </div>
-              <p className="mt-2 text-base text-[#6a7795]">{item.description}</p>
+              <p className="mt-2 text-sm text-[#6a7795] md:text-base">{item.description}</p>
               <p className="mt-1 text-sm font-semibold text-[#8f99b2]">{item.time}</p>
             </div>
           ))}

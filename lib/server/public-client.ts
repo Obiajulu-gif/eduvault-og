@@ -7,8 +7,8 @@ const env = getClientEnv();
 const chainId = Number(env.NEXT_PUBLIC_CHAIN_ID);
 
 export const serverChain = defineChain({
-  id: Number.isNaN(chainId) ? 16600 : chainId,
-  name: "0G Newton Testnet",
+  id: Number.isNaN(chainId) ? 16602 : chainId,
+  name: "0G Galileo Testnet",
   nativeCurrency: { name: "OG", symbol: "OG", decimals: 18 },
   rpcUrls: {
     default: { http: [env.NEXT_PUBLIC_RPC_URL] },

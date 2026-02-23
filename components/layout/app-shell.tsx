@@ -16,11 +16,11 @@ import {
   Store,
 } from "lucide-react";
 import { useMemo } from "react";
-import { useAccount, useBalance, useChainId, useSwitchChain } from "wagmi";
+import { useAccount, useBalance, useChainId, useDisconnect, useSwitchChain } from "wagmi";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { cn, shortAddress } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import { getClientEnv } from "@/lib/env";
 import { Logo } from "@/components/layout/logo";
 import { useAuth } from "@/components/auth/auth-provider";
@@ -75,6 +75,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const chainId = useChainId();
   const { data: balance } = useBalance({ address, query: { enabled: Boolean(address) } });
   const { openConnectModal } = useConnectModal();
+  const { disconnect } = useDisconnect();
   const { switchChain, isPending: switching } = useSwitchChain();
   const wrongChain = isConnected && chainId !== targetChainId;
 
@@ -88,10 +89,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen bg-[#f6f7fb] text-[#162038]">
       <div className="mx-auto flex min-h-screen w-full">
-        <aside className="sticky top-0 hidden h-screen w-[280px] border-r border-[#e7ecf5] bg-white px-4 py-5 lg:flex lg:flex-col">
-          <div className="mb-8">
+        <aside className="sticky top-0 hidden h-screen w-[250px] border-r border-[#e7ecf5] bg-white px-3 py-4 lg:flex lg:flex-col">
+          <Link href="/dashboard" className="mb-6 block">
             <Logo />
-          </div>
+          </Link>
 
           <nav className="space-y-1">
             {primaryNav.map((item) => (
@@ -121,8 +122,17 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               </div>
               <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#ffe8d9] text-sm font-bold text-[#806442]">{initials}</div>
             </div>
-            <Button className="h-11 w-full" onClick={() => openConnectModal?.()}>
-              {isConnected ? shortAddress(address, 3) : "Connect Wallet"}
+            <Button
+              className="h-10 w-full text-sm"
+              onClick={() => {
+                if (isConnected) {
+                  disconnect();
+                  return;
+                }
+                openConnectModal?.();
+              }}
+            >
+              {isConnected ? "Disconnect Wallet" : "Connect Wallet"}
             </Button>
           </div>
         </aside>
@@ -132,7 +142,13 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <div className="flex flex-wrap items-center gap-2 text-sm text-[#8d97ad]">
               {crumbs.map((crumb, index) => (
                 <div key={`${crumb}-${index}`} className="flex items-center gap-2">
-                  <span className={cn(index === crumbs.length - 1 && "font-semibold text-[#384159]")}>{crumb}</span>
+                  {index === 0 ? (
+                    <Link href="/dashboard" className={cn(index === crumbs.length - 1 && "font-semibold text-[#384159]")}>
+                      {crumb}
+                    </Link>
+                  ) : (
+                    <span className={cn(index === crumbs.length - 1 && "font-semibold text-[#384159]")}>{crumb}</span>
+                  )}
                   {index !== crumbs.length - 1 && <span>/</span>}
                 </div>
               ))}
@@ -152,8 +168,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                   {switching ? "Switching..." : "Switch Network"}
                 </Button>
               ) : (
-                <Button variant="outline" size="sm">
-                  {shortAddress(address)}
+                <Button variant="outline" size="sm" onClick={() => disconnect()}>
+                  Disconnect Wallet
                 </Button>
               )}
 

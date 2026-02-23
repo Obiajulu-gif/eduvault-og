@@ -61,8 +61,8 @@ export default function MyPromptsPage() {
     <div className="space-y-5">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h1 className="text-[56px] font-black leading-none">Creator Overview</h1>
-          <p className="pt-2 text-lg text-[#667391]">Performance tracking for your prompt marketplace.</p>
+          <h1 className="text-4xl font-black leading-tight text-[#151f36] md:text-[44px]">Creator Overview</h1>
+          <p className="pt-1 text-sm text-[#667391] md:text-base">Performance tracking for your prompt marketplace.</p>
         </div>
         <Button asChild>
           <a href="/creator/publish">+ Publish New Prompt</a>
@@ -70,16 +70,16 @@ export default function MyPromptsPage() {
       </div>
 
       <div className="grid gap-3 md:grid-cols-4">
-        <Card className="border-[#e4eaf4]"><CardContent className="space-y-1 p-4"><p className="text-sm text-[#7e89a4]">Total Revenue</p><p className="text-[42px] font-black">{totalRevenue.toFixed(2)} ETH</p></CardContent></Card>
-        <Card className="border-[#e4eaf4]"><CardContent className="space-y-1 p-4"><p className="text-sm text-[#7e89a4]">Total Sales</p><p className="text-[42px] font-black">{prompts.length * 24}</p></CardContent></Card>
-        <Card className="border-[#e4eaf4]"><CardContent className="space-y-1 p-4"><p className="text-sm text-[#7e89a4]">Average Rating</p><p className="text-[42px] font-black">4.9</p></CardContent></Card>
-        <Card className="border-[#e4eaf4]"><CardContent className="space-y-1 p-4"><p className="text-sm text-[#7e89a4]">Active Prompts</p><p className="text-[42px] font-black">{prompts.length}</p></CardContent></Card>
+        <Card className="border-[#e4eaf4]"><CardContent className="space-y-1 p-4"><p className="text-xs font-semibold uppercase tracking-wide text-[#7e89a4]">Total Revenue</p><p className="text-[30px] font-black text-[#1f2941] md:text-[34px]">{totalRevenue.toFixed(2)} ETH</p></CardContent></Card>
+        <Card className="border-[#e4eaf4]"><CardContent className="space-y-1 p-4"><p className="text-xs font-semibold uppercase tracking-wide text-[#7e89a4]">Total Sales</p><p className="text-[30px] font-black text-[#1f2941] md:text-[34px]">{prompts.length * 24}</p></CardContent></Card>
+        <Card className="border-[#e4eaf4]"><CardContent className="space-y-1 p-4"><p className="text-xs font-semibold uppercase tracking-wide text-[#7e89a4]">Average Rating</p><p className="text-[30px] font-black text-[#1f2941] md:text-[34px]">4.9</p></CardContent></Card>
+        <Card className="border-[#e4eaf4]"><CardContent className="space-y-1 p-4"><p className="text-xs font-semibold uppercase tracking-wide text-[#7e89a4]">Active Prompts</p><p className="text-[30px] font-black text-[#1f2941] md:text-[34px]">{prompts.length}</p></CardContent></Card>
       </div>
 
       <Card className="border-[#e4eaf4]">
         <CardContent className="space-y-4 p-5">
           <div className="flex items-center justify-between">
-            <h2 className="text-[36px] font-black">Top Performing Prompts</h2>
+            <h2 className="text-2xl font-black text-[#1a2338] md:text-[30px]">Top Performing Prompts</h2>
             <Button variant="outline" onClick={withdraw} disabled={isPending}>
               {isPending ? "Withdrawing..." : "Withdraw Proceeds"}
             </Button>

@@ -10,7 +10,9 @@
     "contract:compile": "hardhat compile",
     "contract:test": "hardhat test",
     "contract:deploy:local": "hardhat run scripts/deploy-marketplace.ts --network hardhat",
-    "contract:deploy:newton": "hardhat run scripts/deploy-marketplace.ts --network ogNewton"
+    "contract:deploy:newton": "hardhat run scripts/deploy-marketplace.ts --network ogNewton",
+    "contract:deploy:galileo": "hardhat run scripts/deploy-marketplace.ts --network ogGalileo",
+    "contract:verify:galileo": "hardhat verify --network ogGalileo"
   },
   "dependencies": {
     "@0glabs/0g-serving-broker": "0.6.2",
