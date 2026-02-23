@@ -23,7 +23,7 @@ import { Badge } from "@/components/ui/badge";
 import { cn, shortAddress } from "@/lib/utils";
 import { getClientEnv } from "@/lib/env";
 import { Logo } from "@/components/layout/logo";
-import { useAuth } from "@/components/auth/auth-provider";
+import { ChatPanel } from "@/components/chat/chat-panel";
 
 const env = getClientEnv();
 const targetChainId = Number(env.NEXT_PUBLIC_CHAIN_ID);
@@ -63,7 +63,6 @@ function NavLink({ href, label, icon: Icon, active }: { href: string; label: str
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const { user } = useAuth();
 
   const crumbs = useMemo(() => {
     const parts = pathname.split("/").filter(Boolean);
@@ -78,12 +77,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const { switchChain, isPending: switching } = useSwitchChain();
   const wrongChain = isConnected && chainId !== targetChainId;
 
-  const initials = (user?.name ?? "Jane Doe")
-    .split(" ")
-    .map((chunk) => chunk[0])
-    .slice(0, 2)
-    .join("")
-    .toUpperCase();
+  const initials = isConnected
+    ? shortAddress(address, 2).replace("...", "").toUpperCase()
+    : "??";
 
   return (
     <div className="min-h-screen bg-[#f6f7fb] text-[#162038]">
@@ -116,8 +112,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <div className="mt-auto space-y-3 pb-2 pt-6">
             <div className="flex items-center justify-between rounded-xl bg-[#f5f7fc] px-3 py-2.5">
               <div>
-                <p className="text-sm font-semibold text-[#283047]">{user?.name ?? "Jane Doe"}</p>
-                <p className="text-xs font-semibold text-[#7b2ff7]">{isConnected ? `${balance?.formatted?.slice(0, 6) ?? "0.00"} ETH` : "0.00 ETH"}</p>
+                <p className="text-sm font-semibold text-[#283047]">{isConnected ? shortAddress(address, 4) : "Not Connected"}</p>
+                <p className="text-xs font-semibold text-[#7b2ff7]">{isConnected ? `${balance?.formatted?.slice(0, 6) ?? "0.00"} ETH` : "Connect wallet"}</p>
               </div>
               <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#ffe8d9] text-sm font-bold text-[#806442]">{initials}</div>
             </div>
@@ -169,6 +165,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
           <main className="flex-1 px-5 py-6 lg:px-8">{children}</main>
         </div>
+
+        <ChatPanel />
       </div>
     </div>
   );
