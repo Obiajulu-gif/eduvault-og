@@ -41,19 +41,19 @@ export function PromptCard({ prompt }: { prompt: PromptListing }) {
         </div>
 
         <div className="space-y-1.5">
-          <h3 className="text-[31px] font-bold leading-tight text-[#172038]">{prompt.metadata?.title ?? `Prompt #${prompt.promptId}`}</h3>
-          <p className="min-h-[52px] text-base leading-relaxed text-[#65708a]">{prompt.metadata?.shortDescription ?? "No description available."}</p>
+          <h3 className="text-[28px] font-black leading-tight text-[#172038]">{prompt.metadata?.title ?? `Prompt #${prompt.promptId}`}</h3>
+          <p className="min-h-[52px] text-sm leading-relaxed text-[#65708a] md:text-base">{prompt.metadata?.shortDescription ?? "No description available."}</p>
         </div>
 
         <div className="flex items-center justify-between text-sm font-semibold text-[#47516a]">
           <span>{prompt.metadata?.creatorHandle ?? "@unknown"}</span>
-          <span className="text-[#9aa2b8]">• {prompt.metadata?.category ?? "All"}</span>
+          <span className="text-[#9aa2b8]">| {prompt.metadata?.category ?? "All"}</span>
         </div>
 
         <div className="flex items-end justify-between gap-3 pt-1">
           <div>
             <p className="text-xs font-bold uppercase tracking-wide text-[#95a0b8]">Price</p>
-            <p className="text-[36px] font-black leading-none text-[#1a2238]">{price} ETH</p>
+            <p className="text-[30px] font-black leading-none text-[#1a2238] md:text-[32px]">{price} ETH</p>
           </div>
           <Button asChild className="h-10 min-w-[138px]">
             <Link href={`/dashboard/marketplace/${prompt.promptId}`}>View Details</Link>

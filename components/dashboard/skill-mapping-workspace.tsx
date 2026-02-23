@@ -24,8 +24,8 @@ function formatAnalysis(result: SkillMappingResult) {
     .map((skill) => `${skill.name} (${skill.level}, ${Math.round(skill.confidence * 100)}%)`)
     .join(", ");
 
-  const strengths = result.strengths.slice(0, 2).join(" • ");
-  const gaps = result.gaps.slice(0, 2).join(" • ");
+  const strengths = result.strengths.slice(0, 2).join(" | ");
+  const gaps = result.gaps.slice(0, 2).join(" | ");
 
   return `I analyzed your document. Top skills: ${skills || "No strong signals yet"}. Strengths: ${strengths || "N/A"}. Gaps to improve: ${gaps || "N/A"}.`;
 }
@@ -216,10 +216,10 @@ export function SkillMappingWorkspace() {
             </div>
 
             <div className="text-center">
-              <h2 className="text-3xl font-black leading-tight text-[#161f35] md:text-4xl">
+              <h2 className="text-2xl font-black leading-tight text-[#161f35] md:text-[34px]">
                 EduVault AI is mapping your skills
               </h2>
-              <p className="mx-auto mt-2 max-w-2xl text-base text-[#667391] md:text-lg">
+              <p className="mx-auto mt-2 max-w-2xl text-sm text-[#667391] md:text-base">
                 Upload a document to extract strengths, skill gaps, and a practical growth roadmap.
               </p>
             </div>
@@ -305,7 +305,7 @@ export function SkillMappingWorkspace() {
                   <div key={skill.name} className="rounded-xl border border-[#e8eef7] bg-[#fbfdff] px-3 py-2">
                     <p className="text-sm font-bold text-[#24304b]">{skill.name}</p>
                     <p className="text-xs text-[#6f7c98]">
-                      {skill.level} • {Math.round(skill.confidence * 100)}% confidence
+                      {skill.level} | {Math.round(skill.confidence * 100)}% confidence
                     </p>
                   </div>
                 ))}
@@ -359,4 +359,3 @@ export function SkillMappingWorkspace() {
     </div>
   );
 }
-

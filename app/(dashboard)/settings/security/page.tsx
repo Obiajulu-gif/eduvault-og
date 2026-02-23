@@ -16,8 +16,8 @@ export default function SettingsSecurityPage() {
     <div className="space-y-5">
       <div className="flex items-start justify-between">
         <div>
-          <h1 className="text-[56px] font-black leading-none">Settings</h1>
-          <p className="pt-2 text-lg text-[#667391]">Manage your data, security protocols, and notification preferences.</p>
+          <h1 className="text-4xl font-black leading-tight text-[#151f36] md:text-[44px]">Settings</h1>
+          <p className="pt-1 text-sm text-[#667391] md:text-base">Manage your data, security protocols, and notification preferences.</p>
         </div>
         <div className="rounded-xl border border-[#d7efe3] bg-[#ecfaf2] px-4 py-2 text-sm font-semibold text-[#0f9f61]">
           Settings updated successfully.
@@ -33,9 +33,9 @@ export default function SettingsSecurityPage() {
         <CardContent className="space-y-5 p-5">
           <div className="flex flex-wrap items-center justify-between rounded-2xl border border-[#e4eaf4] p-4">
             <div>
-              <p className="text-[34px] font-black">Two-Factor Authentication</p>
-              <p className="text-base text-[#667391]">Add an extra layer of security by requiring a code from your mobile device.</p>
-              <p className="pt-2 text-sm font-bold text-[#6f7b97]">• Status: {twoFaEnabled ? "Enabled" : "Currently Disabled"}</p>
+              <p className="text-2xl font-black text-[#1a2338] md:text-[28px]">Two-Factor Authentication</p>
+              <p className="text-sm text-[#667391] md:text-base">Add an extra layer of security by requiring a code from your mobile device.</p>
+              <p className="pt-2 text-sm font-bold text-[#6f7b97]">Status: {twoFaEnabled ? "Enabled" : "Currently Disabled"}</p>
             </div>
             <button
               className={`relative h-8 w-14 rounded-full ${twoFaEnabled ? "bg-[#7b2ff7]" : "bg-[#d7ddea]"}`}
@@ -48,7 +48,7 @@ export default function SettingsSecurityPage() {
           <div className="grid gap-4 xl:grid-cols-2">
             <Card className="border-[#e4eaf4]">
               <CardContent className="space-y-3 p-4">
-                <p className="text-[32px] font-black">Change Password</p>
+                <p className="text-2xl font-black text-[#1a2338] md:text-[28px]">Change Password</p>
                 <div className="space-y-2">
                   <Label>Current Password</Label>
                   <Input type="password" defaultValue="********" />
@@ -67,7 +67,7 @@ export default function SettingsSecurityPage() {
 
             <Card className="border-[#e4eaf4]">
               <CardContent className="space-y-3 p-4">
-                <p className="text-[32px] font-black">Data Privacy</p>
+                <p className="text-2xl font-black text-[#1a2338] md:text-[28px]">Data Privacy</p>
                 <p className="text-sm text-[#6f7b97]">EduVault anonymization ensures student identities are masked in reporting.</p>
                 <div className="rounded-xl border border-[#e4eaf4] bg-[#fafcff] p-3">
                   <div className="flex items-center justify-between">
@@ -86,7 +86,7 @@ export default function SettingsSecurityPage() {
           <Card className="border-[#e4eaf4]">
             <CardContent className="space-y-2 p-4">
               <div className="flex items-center justify-between">
-                <p className="text-[30px] font-black">Connected Applications</p>
+                <p className="text-2xl font-black text-[#1a2338] md:text-[26px]">Connected Applications</p>
                 <button className="text-sm font-bold text-[#7b2ff7]">Link New App</button>
               </div>
               {[
@@ -121,9 +121,9 @@ export default function SettingsSecurityPage() {
 
             <div className="mt-4 flex items-center gap-3 text-sm font-bold text-[#8d97af]">
               <span className="rounded-full bg-[#7b2ff7] px-2 py-1 text-white">1 Connect</span>
-              <span>—</span>
+              <span>-</span>
               <span className="rounded-full bg-[#eef2f8] px-2 py-1">2 Verify</span>
-              <span>—</span>
+              <span>-</span>
               <span className="rounded-full bg-[#eef2f8] px-2 py-1">3 Backup</span>
             </div>
 

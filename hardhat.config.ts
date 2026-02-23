@@ -15,17 +15,39 @@ const config: HardhatUserConfig = {
         enabled: true,
         runs: 200,
       },
+      evmVersion: "cancun",
     },
   },
   networks: {
     hardhat: {
       chainId: 31337,
     },
+    ogGalileo: {
+      url: process.env.NEXT_PUBLIC_RPC_URL || "https://evmrpc-testnet.0g.ai",
+      chainId: Number(process.env.NEXT_PUBLIC_CHAIN_ID || 16602),
+      accounts: deployerPk ? [deployerPk] : [],
+    },
+    // Backward-compatible alias for existing scripts
     ogNewton: {
       url: process.env.NEXT_PUBLIC_RPC_URL || "https://evmrpc-testnet.0g.ai",
       chainId: Number(process.env.NEXT_PUBLIC_CHAIN_ID || 16602),
       accounts: deployerPk ? [deployerPk] : [],
     },
+  },
+  etherscan: {
+    apiKey: {
+      ogGalileo: "empty",
+    },
+    customChains: [
+      {
+        network: "ogGalileo",
+        chainId: Number(process.env.NEXT_PUBLIC_CHAIN_ID || 16602),
+        urls: {
+          apiURL: "https://chainscan-galileo.0g.ai/api",
+          browserURL: "https://chainscan-galileo.0g.ai",
+        },
+      },
+    ],
   },
   paths: {
     sources: "./contracts",

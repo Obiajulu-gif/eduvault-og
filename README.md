@@ -4,7 +4,7 @@ EduVault is a decentralized AI Prompt Marketplace + Research Vault on the 0G eco
 
 - Landing page is now at `/` (public first screen).
 - Auth routes: `/login`, `/signup`, `/verify-email`, `/forgot-password`.
-- App routes: `/overview`, `/marketplace`, `/research-vault`, and related dashboard pages.
+- App routes: `/dashboard` (redirects to `/overview`), `/overview`, `/my-skills`, `/dashboard/marketplace`, `/research-vault`, and related dashboard pages.
 
 ## Stack
 
@@ -96,10 +96,10 @@ pnpm contract:compile
 pnpm contract:test
 ```
 
-Deploy to 0G Newton:
+Deploy to 0G Galileo:
 
 ```bash
-pnpm contract:deploy:newton
+pnpm contract:deploy:galileo
 ```
 
 After deploy, set:
@@ -157,13 +157,40 @@ Env:
 - Call `listPrompt` on 0G chain
 
 2. Buyer purchases:
-- Open listing `/marketplace/[promptId]`
+- Open listing `/dashboard/marketplace/[promptId]`
 - Confirm wallet tx (`buyPrompt`)
 
 3. Execute and save:
 - Run prompt in `/research-vault/execute/[promptId]`
 - Stream output via compute API
 - Autosave output to 0G Storage
+
+## Vercel Env
+
+Add these in Vercel Project Settings -> Environment Variables:
+
+```bash
+NEXT_PUBLIC_CHAIN_ID=16602
+NEXT_PUBLIC_RPC_URL=https://evmrpc-testnet.0g.ai
+NEXT_PUBLIC_BLOCK_EXPLORER=https://chainscan-galileo.0g.ai
+NEXT_PUBLIC_MARKETPLACE_ADDRESS=0x...
+NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID=...
+NEXT_PUBLIC_SUPABASE_URL=...
+NEXT_PUBLIC_SUPABASE_ANON_KEY=...
+NEXT_PUBLIC_ENABLE_MOCKS=false
+
+DEPLOYER_PRIVATE_KEY=0x...
+OG_STORAGE_RPC_URL=https://evmrpc-testnet.0g.ai
+OG_STORAGE_INDEXER_RPC=https://indexer-storage-testnet-standard.0g.ai
+OG_STORAGE_PRIVATE_KEY=0x...
+OG_COMPUTE_RPC_URL=https://evmrpc-testnet.0g.ai
+OG_COMPUTE_PRIVATE_KEY=0x...
+OG_COMPUTE_DEFAULT_PROVIDER=0x...
+OG_COMPUTE_DEFAULT_MODEL=qwen/qwen-2.5-7b-instruct
+OG_COMPUTE_PROMPT_FALLBACK_FEE=0.01
+INDEXER_START_BLOCK=0
+SUPABASE_SERVICE_ROLE_KEY=...
+```
 
 ## Build & Deploy
 

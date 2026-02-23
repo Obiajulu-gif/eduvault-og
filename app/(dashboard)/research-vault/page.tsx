@@ -47,14 +47,14 @@ export default function ResearchVaultPage() {
     <div className="space-y-5">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h1 className="text-[56px] font-black leading-none">Research Vault</h1>
-          <p className="pt-2 text-lg text-[#667391]">Run purchased prompts and preserve output artifacts on 0G Storage.</p>
+          <h1 className="text-4xl font-black leading-tight text-[#151f36] md:text-[44px]">Research Vault</h1>
+          <p className="pt-1 text-sm text-[#667391] md:text-base">Run purchased prompts and preserve output artifacts on 0G Storage.</p>
         </div>
       </div>
 
       <Card className="border-[#e4eaf4]">
         <CardContent className="space-y-4 p-5">
-          <h2 className="text-[38px] font-black">Licensed Prompt Tools</h2>
+          <h2 className="text-2xl font-black text-[#1a2338] md:text-[30px]">Licensed Prompt Tools</h2>
           {promptsQuery.isLoading ? (
             <p className="text-sm text-[#8792ab]">Loading licenses...</p>
           ) : licensedPrompts.length === 0 ? (
@@ -69,7 +69,7 @@ export default function ResearchVaultPage() {
               {licensedPrompts.map((prompt) => (
                 <Card key={prompt.promptId} className="border-[#e4eaf4]">
                   <CardContent className="space-y-2 p-4">
-                    <p className="text-[30px] font-black leading-none">{prompt.metadata?.title ?? `Prompt #${prompt.promptId}`}</p>
+                    <p className="text-xl font-black leading-tight text-[#1a2338] md:text-2xl">{prompt.metadata?.title ?? `Prompt #${prompt.promptId}`}</p>
                     <p className="text-sm text-[#697694]">{prompt.metadata?.shortDescription}</p>
                     <Button asChild>
                       <Link href={`/research-vault/execute/${prompt.promptId}`}>Execute</Link>
@@ -84,7 +84,7 @@ export default function ResearchVaultPage() {
 
       <Card className="border-[#e4eaf4]">
         <CardContent className="space-y-4 p-5">
-          <h2 className="text-[38px] font-black">Saved Runs</h2>
+          <h2 className="text-2xl font-black text-[#1a2338] md:text-[30px]">Saved Runs</h2>
           {runs.length === 0 ? (
             <p className="text-sm text-[#8792ab]">No compute outputs saved yet.</p>
           ) : (
