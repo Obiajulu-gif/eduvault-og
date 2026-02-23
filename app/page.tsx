@@ -2,108 +2,171 @@ import Link from "next/link";
 import {
   ArrowRight,
   BookOpenCheck,
-  Check,
-  Circle,
-  Cloud,
+  CheckCircle2,
+  Code2,
   Database,
-  Download,
-  FileSearch,
-  Globe,
-  GraduationCap,
+  Facebook,
+  Instagram,
   Linkedin,
-  Lock,
+  Mail,
   Search,
   ShieldCheck,
   Sparkles,
   Star,
   Twitter,
+  Upload,
+  Wand2,
   Youtube,
 } from "lucide-react";
 
-const verificationSteps = [
+const processCards = [
   {
-    title: "Input Credential ID",
+    id: "1",
+    title: "Upload Academic Work",
     description:
-      "Receive a unique identifier from the candidate or find it on their official EduVault profile.",
-    icon: FileSearch,
+      "Upload your papers, projects, and transcripts. Our AI scans every document to build your career competency graph.",
+    tag: "AUTO-SKILL EXTRACTION",
+    icon: Upload,
   },
   {
-    title: "Blockchain Check",
+    id: "2",
+    title: "Get Your Roadmap",
     description:
-      "Our engine queries the immutable ledger to ensure the certificate was issued by an authorized institution.",
+      "Receive a custom career timeline and interactive skill tree. We visualize the exact path from your current studies.",
+    tag: "PERSONALIZED EVOLUTION",
+    icon: Wand2,
+  },
+  {
+    id: "3",
+    title: "Execute with Prompts",
+    description:
+      "Access our curated marketplace of actionable prompts. People and recruiters can verify growth from your evidence.",
+    tag: "MARKETPLACE ITERATION",
+    icon: Sparkles,
+  },
+];
+
+const featureCards = [
+  {
+    title: "AI Powered",
+    body: "Our model reasons deeply to accurately connect your academic writing.",
     icon: Sparkles,
   },
   {
-    title: "Verified Report",
-    description:
-      "Instantly receive a tamper-proof report detailing specific skills, project outputs, and achievement dates.",
+    title: "Verified Proof",
+    body: "Tamper-resistant records make skills discoverable, verifiable, and safe.",
     icon: ShieldCheck,
   },
-];
-
-const skillCards = [
-  { label: "TypeScript", level: "Expert level", icon: "</>" },
-  { label: "AWS Lambda", level: "Advanced", icon: "CL" },
-  { label: "PostgreSQL", level: "Intermediate", icon: "DB" },
-  { label: "Rust", level: "Advanced", icon: "RU" },
-  { label: "OAuth 2.0", level: "Expert level", icon: "OA" },
-  { label: "System Design", level: "Intermediate", icon: "SD" },
-];
-
-const marketplaceCards = [
   {
-    category: "Data Science",
-    title: "Python for Data Science",
-    description: "Advanced data manipulation and visualization techniques validated by AI mapping.",
-    author: "Alex J.",
-    price: "0.05 ETH",
+    title: "Live Updates",
+    body: "Your roadmap evolves in real time as your portfolio grows.",
+    icon: ArrowRight,
   },
   {
-    category: "Blockchain",
+    title: "Career Ready",
+    body: "Deliver meaningful career relevance, looking for specific skills.",
+    icon: CheckCircle2,
+  },
+];
+
+const marketCards = [
+  {
+    category: "DATA SCIENCE",
+    title: "Python for Data Science",
+    desc: "Advanced data manipulation and visualization techniques validated by AI mapping.",
+    author: "Alex J.",
+    price: "0.05 ETH",
+    color: "bg-[#d8cff6]",
+    icon: "< >",
+  },
+  {
+    category: "BLOCKCHAIN",
     title: "Solidity Smart Contract Basics",
-    description: "Comprehensive understanding of Ethereum contracts and security patterns.",
+    desc: "Comprehensive understanding of Ethereum contracts and security patterns.",
     author: "Sarah M.",
     price: "0.08 ETH",
+    color: "bg-[#c9e0f3]",
+    icon: "DB",
   },
   {
-    category: "Data Science",
+    category: "DATA SCIENCE",
     title: "Python for Data Science",
-    description: "Advanced data manipulation and visualization techniques validated by AI mapping.",
+    desc: "Advanced data manipulation and visualization techniques validated by AI mapping.",
     author: "Alex J.",
     price: "0.05 ETH",
+    color: "bg-[#d8cff6]",
+    icon: "< >",
+  },
+];
+
+const testimonials = [
+  {
+    name: "Michael Wong",
+    role: "Michael, Software Engineer",
+    rating: "4.9",
+    quote:
+      "EduVault showed me skills I did not even know I had. Instead of guessing what to learn next, I now have a clear roadmap.",
+    image:
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80",
+  },
+  {
+    name: "Avril Song",
+    role: "Web Development Student",
+    rating: "4.8",
+    quote:
+      "The productivity prompts 2x my research speed. It feels like having a senior mentor guiding my workflow.",
+    image:
+      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=200&q=80",
+  },
+  {
+    name: "Jeane Wood",
+    role: "Data Science Student",
+    rating: "5.0",
+    quote:
+      "This is LinkedIn + AI + Web3 done right. Finally, something built for career execution, not just courses.",
+    image:
+      "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=200&q=80",
   },
 ];
 
 function Brand() {
   return (
     <div className="flex items-center gap-2.5">
-      <div className="grid h-6 w-6 place-items-center rounded-md bg-[#7c2df8] text-white">
+      <span className="grid h-6 w-6 place-items-center rounded-md bg-[#7e2df8] text-white">
         <BookOpenCheck className="h-3.5 w-3.5" />
-      </div>
-      <span className="text-[28px] font-black tracking-tight text-[#101a31]">EduVault</span>
+      </span>
+      <span className="text-[22px] font-black tracking-tight text-[#121b32]">EduVault</span>
     </div>
   );
 }
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen bg-[#f6f8fb] text-[#111a31]">
-      <header className="sticky top-0 z-40 border-b border-[#e5eaf3] bg-[#fbfcff]/95 backdrop-blur">
-        <div className="mx-auto flex h-[72px] w-full max-w-[1280px] items-center justify-between px-4 md:px-8">
+    <div className="min-h-screen bg-[#f8faff] text-[#121b32]">
+      <header className="border-b border-[#e8edf6] bg-white">
+        <div className="mx-auto flex h-[68px] w-full max-w-[1240px] items-center justify-between px-4 md:px-8">
           <Brand />
-          <nav className="hidden items-center gap-10 text-sm font-semibold text-[#49546f] lg:flex">
-            <a href="#home" className="hover:text-[#6f2df3]">Home</a>
-            <a href="#marketplace" className="hover:text-[#6f2df3]">Marketplace</a>
-            <a href="#verify" className="hover:text-[#6f2df3]">Verify</a>
-            <a href="#contact" className="hover:text-[#6f2df3]">Contact</a>
+          <nav className="hidden items-center gap-8 text-sm font-semibold text-[#47526f] md:flex">
+            <a href="#home" className="hover:text-[#7e2df8]">
+              Home
+            </a>
+            <a href="#marketplace" className="hover:text-[#7e2df8]">
+              Marketplace
+            </a>
+            <a href="#verify" className="hover:text-[#7e2df8]">
+              Verify
+            </a>
+            <a href="#contact" className="hover:text-[#7e2df8]">
+              Contact
+            </a>
           </nav>
-          <div className="flex items-center gap-3">
-            <Link href="/login" className="text-sm font-semibold text-[#2b3650] hover:text-[#6f2df3]">
+          <div className="flex items-center gap-4">
+            <Link href="/login" className="text-sm font-semibold text-[#293450]">
               Login
             </Link>
             <Link
               href="/signup"
-              className="rounded-xl bg-[#7c2df8] px-5 py-2.5 text-sm font-bold text-white shadow-[0_14px_30px_-18px_rgba(124,45,248,0.95)] transition hover:brightness-110"
+              className="rounded-[10px] bg-[#7e2df8] px-4 py-2 text-sm font-bold text-white shadow-[0_14px_24px_-16px_rgba(126,45,248,0.95)]"
             >
               Sign Up
             </Link>
@@ -112,276 +175,189 @@ export default function HomePage() {
       </header>
 
       <main id="home">
-        <section className="bg-[#f1ecf9]">
-          <div className="mx-auto w-full max-w-[1280px] px-4 pb-14 pt-16 md:px-8 md:pt-20">
-            <div className="mx-auto max-w-[760px] text-center">
-              <p className="mx-auto inline-flex items-center gap-2 rounded-full bg-[#e9dcff] px-3 py-1 text-xs font-extrabold uppercase tracking-wide text-[#6f2df3]">
-                <Circle className="h-2.5 w-2.5 fill-current stroke-0" />
-                Blockchain verified
-              </p>
-
-              <h1 className="mt-6 text-[56px] font-black leading-[0.92] text-[#0f1731] md:text-[84px]">
-                Instant Credential
-                <br />
-                Verification
-              </h1>
-
-              <p className="mx-auto mt-7 max-w-[700px] text-xl leading-relaxed text-[#5a6786]">
-                Eliminate resume fraud with EduVault&apos;s blockchain-backed verification system.
-                Securely validate academic and professional achievements in seconds.
-              </p>
-
-              <div className="mt-9 rounded-2xl border border-[#d7dfeb] bg-white p-2 shadow-[0_15px_30px_-20px_rgba(34,52,92,0.45)]">
-                <div className="flex flex-col gap-2 sm:flex-row">
-                  <div className="flex flex-1 items-center gap-3 px-4 py-3 text-[#96a3be]">
-                    <Search className="h-5 w-5" />
-                    <span className="text-sm font-medium md:text-base">Enter Credential ID (e.g., EV-9823-XQ-2024)</span>
-                  </div>
-                  <button
-                    type="button"
-                    className="h-12 rounded-xl bg-[#7c2df8] px-10 text-sm font-extrabold text-white shadow-[0_14px_30px_-18px_rgba(124,45,248,0.95)] transition hover:brightness-110"
-                  >
-                    Verify <ArrowRight className="ml-1 inline h-3.5 w-3.5" />
-                  </button>
-                </div>
-              </div>
-
-              <p className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-[#7a87a4]">
-                <Lock className="h-3.5 w-3.5" />
-                EduVault only displays authorized public credential data.
-              </p>
-            </div>
-          </div>
-        </section>
-
-        <section className="border-y border-[#e8edf6] bg-[#f7f9fd]">
-          <div className="mx-auto w-full max-w-[1280px] px-4 py-7 md:px-8">
-            <p className="text-center text-xs font-extrabold uppercase tracking-[0.2em] text-[#9ba7c2]">
-              Trusted compliance & security
+        <section className="mx-auto grid w-full max-w-[1240px] gap-12 px-4 pb-20 pt-16 md:px-8 lg:grid-cols-[1fr_1.05fr] lg:items-center lg:pt-20">
+          <div>
+            <p className="inline-flex items-center gap-2 rounded-full bg-[#f1e6ff] px-3 py-1 text-[10px] font-extrabold uppercase tracking-[0.12em] text-[#7e2df8]">
+              Career Intelligence Platform
             </p>
-            <div className="mt-5 flex flex-wrap items-center justify-center gap-10 text-xl font-black text-[#5e6983]">
-              <p className="inline-flex items-center gap-2"><ShieldCheck className="h-5 w-5" /> SOC2 TYPE II</p>
-              <p className="inline-flex items-center gap-2"><Globe className="h-5 w-5" /> GDPR</p>
-              <p className="inline-flex items-center gap-2"><GraduationCap className="h-5 w-5" /> FERPA</p>
-              <p className="inline-flex items-center gap-2"><Lock className="h-5 w-5" /> CCPA</p>
+            <h1 className="mt-5 text-[56px] font-black leading-[0.95] md:text-[72px]">
+              Turn Academic Work
+              <br />
+              Into <span className="text-[#7e2df8]">Career Capital.</span>
+            </h1>
+            <p className="mt-5 max-w-[540px] text-base leading-relaxed text-[#5f6a88] md:text-lg">
+              EduVault transforms your academic achievements into a personalized career roadmap using advanced AI skill mapping.
+            </p>
+
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Link
+                href="/signup"
+                className="rounded-[10px] bg-[#7e2df8] px-7 py-3 text-sm font-bold text-white shadow-[0_14px_24px_-16px_rgba(126,45,248,0.95)]"
+              >
+                Get Started
+              </Link>
+              <Link
+                href="/marketplace"
+                className="rounded-[10px] border border-[#ccd6e8] bg-white px-7 py-3 text-sm font-bold text-[#24314f]"
+              >
+                Explore Marketplace
+              </Link>
             </div>
+
+            <div className="mt-10 inline-flex items-center gap-3 rounded-xl border-l-2 border-[#7e2df8] bg-white px-3 py-2">
+              <div className="flex -space-x-2">
+                {[
+                  "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=96&q=80",
+                  "https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?auto=format&fit=crop&w=96&q=80",
+                  "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?auto=format&fit=crop&w=96&q=80",
+                ].map((src) => (
+                  <img
+                    key={src}
+                    src={src}
+                    alt="student"
+                    className="h-10 w-10 rounded-full border-2 border-white object-cover"
+                  />
+                ))}
+                <span className="grid h-10 w-10 place-items-center rounded-full border-2 border-white bg-[#7e2df8] text-xs font-black text-white">
+                  900+
+                </span>
+              </div>
+              <p className="text-sm font-bold text-[#3a4562]">Join Other STEM Graduates</p>
+            </div>
+          </div>
+
+          <div className="relative">
+            <div className="overflow-hidden rounded-[22px] border border-[#dfe6f3] shadow-[0_28px_50px_-36px_rgba(20,32,58,0.5)]">
+              <img
+                src="https://images.unsplash.com/photo-1598257006458-087169a1f08d?auto=format&fit=crop&w=1100&q=80"
+                alt="smiling student"
+                className="h-[430px] w-full object-cover md:h-[520px]"
+              />
+            </div>
+            <article className="absolute -bottom-8 left-6 w-[260px] rounded-2xl border border-[#e4eaf4] bg-white p-4 shadow-[0_26px_40px_-30px_rgba(35,48,80,0.6)]">
+              <p className="text-[10px] font-extrabold uppercase tracking-[0.12em] text-[#8a96b1]">Productivity Roadmap</p>
+              <p className="mt-2 text-xs font-semibold text-[#6d7894]">Current Stage</p>
+              <p className="text-sm font-black text-[#1a243f]">AI Strategy Intern</p>
+              <div className="mt-2 h-1.5 rounded-full bg-[#e8edf6]">
+                <div className="h-1.5 w-[72%] rounded-full bg-[#7e2df8]" />
+              </div>
+              <p className="mt-3 text-xs font-semibold text-[#6d7894]">Next Milestone</p>
+              <p className="text-sm font-black text-[#1a243f]">Senior Data Scientist</p>
+            </article>
           </div>
         </section>
 
-        <section id="verify" className="mx-auto w-full max-w-[1280px] px-4 py-16 md:px-8 md:py-20">
-          <div className="grid gap-6 md:grid-cols-3">
-            {verificationSteps.map((step, index) => (
-              <article key={step.title} className="rounded-2xl border border-[#e5eaf4] bg-white p-6 text-center">
-                <div className="mx-auto grid h-14 w-14 place-items-center rounded-full bg-[#f3ecff] text-[#7b2ff7]">
-                  <step.icon className="h-5 w-5" />
-                </div>
-                <h3 className="mt-5 text-[34px] font-black leading-none">{index + 1}. {step.title}</h3>
-                <p className="mt-3 text-base leading-relaxed text-[#5f6c8b]">{step.description}</p>
-              </article>
-            ))}
-          </div>
-        </section>
-
-        <section className="bg-[#f7f9fd] py-16 md:py-20">
-          <div className="mx-auto grid w-full max-w-[1280px] gap-10 px-4 md:px-8 lg:grid-cols-[1fr_1.05fr]">
-            <div>
-              <h2 className="text-[56px] font-black leading-[0.9]">
-                Beyond Names and Titles:
-                <br />
-                <span className="text-[#7b2ff7]">Actionable Verification</span>
-              </h2>
-
-              <div className="mt-8 space-y-8">
-                <div className="flex items-start gap-4">
-                  <div className="grid h-10 w-10 place-items-center rounded-xl bg-[#f1e7ff] text-[#7b2ff7]">
-                    <BookOpenCheck className="h-4 w-4" />
-                  </div>
-                  <div>
-                    <h3 className="text-2xl font-black">Verifiable Productivity</h3>
-                    <p className="mt-2 max-w-[520px] text-base leading-relaxed text-[#5f6c8b]">
-                      Move beyond generic job titles. EduVault shows verified project completions, code contributions,
-                      and portfolio pieces directly linked from issuing bodies.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-4">
-                  <div className="grid h-10 w-10 place-items-center rounded-xl bg-[#f1e7ff] text-[#7b2ff7]">
-                    <Sparkles className="h-4 w-4" />
-                  </div>
-                  <div>
-                    <h3 className="text-2xl font-black">Immutable Skills</h3>
-                    <p className="mt-2 max-w-[520px] text-base leading-relaxed text-[#5f6c8b]">
-                      Skills are verified at the source and recorded on a tamper-proof ledger. Once issued, they are impossible
-                      to alter, forge, or exaggerate.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="rounded-3xl border border-[#e4eaf4] bg-white p-6 shadow-[0_22px_44px_-28px_rgba(27,40,70,0.45)]">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="h-10 w-10 rounded-full bg-[#c6d1e3]" />
-                  <div className="space-y-2">
-                    <div className="h-3 w-32 rounded-full bg-[#c7d3e5]" />
-                    <div className="h-2.5 w-44 rounded-full bg-[#dbe4f1]" />
-                  </div>
-                </div>
-                <ShieldCheck className="h-5 w-5 text-[#4ec170]" />
-              </div>
-
-              <div className="mt-6 rounded-xl border border-[#e1d4fc] bg-[#f7f0ff] p-4">
-                <div className="h-3 w-20 rounded-full bg-[#b689ff]" />
-                <div className="mt-3 h-3 w-full rounded-full bg-[#ad75ff]" />
-              </div>
-
-              <div className="mt-5 space-y-4">
-                <div className="h-3 w-24 rounded-full bg-[#c9d4e6]" />
-                <div className="h-3 w-[72%] rounded-full bg-[#becbdd]" />
-                <div className="h-3 w-24 rounded-full bg-[#c9d4e6]" />
-                <div className="h-3 w-[58%] rounded-full bg-[#becbdd]" />
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section className="mx-auto w-full max-w-[1280px] px-4 py-16 md:px-8">
-          <div className="mb-5 flex items-center justify-between gap-4">
-            <h2 className="text-[44px] font-black leading-none">Verification Results</h2>
-            <button type="button" className="inline-flex items-center gap-2 text-sm font-extrabold text-[#7b2ff7]">
-              <Download className="h-3.5 w-3.5" />
-              Download Verification Report
-            </button>
+        <section id="verify" className="mx-auto w-full max-w-[1240px] px-4 py-24 md:px-8">
+          <div className="text-center">
+            <h2 className="text-[46px] font-black leading-none md:text-[56px]">Our High-Fidelity Process</h2>
+            <p className="mx-auto mt-3 max-w-[620px] text-base leading-relaxed text-[#687693] md:text-lg">
+              Seamlessly transition from a student mindset to a professional identity with our AI-driven workflow.
+            </p>
           </div>
 
-          <div className="grid gap-5 lg:grid-cols-[360px_1fr]">
-            <div className="space-y-4">
-              <article className="rounded-2xl border border-[#dfe5f1] bg-white p-5">
-                <div className="mx-auto flex h-[126px] w-[126px] items-center justify-center rounded-full border-4 border-[#cad7ff] bg-[linear-gradient(145deg,#2e3b59_0,#0f1930_100%)] text-4xl text-white">
-                  A
+          <div className="mt-10 grid gap-5 md:grid-cols-3">
+            {processCards.map((card) => (
+              <article key={card.id} className="relative rounded-2xl border border-[#e3e9f3] bg-[#fbfcff] p-5">
+                <span className="absolute -left-1.5 -top-1.5 grid h-8 w-8 place-items-center rounded-lg bg-[#7e2df8] text-sm font-black text-white">
+                  {card.id}
+                </span>
+                <div className="rounded-xl border border-[#e7edf7] bg-white p-3">
+                  <div className="mb-2 inline-flex h-8 w-8 items-center justify-center rounded-lg bg-[#f1e6ff] text-[#7e2df8]">
+                    <card.icon className="h-4 w-4" />
+                  </div>
+                  <div className="h-2 w-4/5 rounded-full bg-[#dfe7f4]" />
+                  <div className="mt-2 h-2 w-3/5 rounded-full bg-[#dfe7f4]" />
                 </div>
-                <h3 className="mt-4 text-center text-[40px] font-black leading-none">Alex Rivers</h3>
-                <p className="mt-2 text-center text-lg text-[#697691]">Senior Full Stack Developer</p>
-                <p className="mx-auto mt-3 inline-flex rounded-full bg-[#efe4ff] px-3 py-1 text-xs font-black uppercase tracking-wide text-[#7b2ff7]">
-                  Verified by EduVault AI
+                <h3 className="mt-4 text-[32px] font-black leading-none">{card.title}</h3>
+                <p className="mt-3 text-sm leading-relaxed text-[#62708d]">{card.description}</p>
+                <p className="mt-4 text-[10px] font-extrabold uppercase tracking-[0.12em] text-[#7e2df8]">
+                  {card.tag}
                 </p>
-
-                <div className="mt-5 space-y-3 border-t border-[#edf1f7] pt-4 text-sm">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[#7a86a3]">Vault ID</span>
-                    <span className="font-extrabold text-[#1c2841]">EV-8829-QX</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-[#7a86a3]">Wallet</span>
-                    <span className="font-extrabold text-[#7b2ff7]">0x71C...49A2</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-[#7a86a3]">Last Synced</span>
-                    <span className="font-extrabold text-[#1c2841]">2 hours ago</span>
-                  </div>
-                </div>
               </article>
+            ))}
+          </div>
+        </section>
 
-              <article className="rounded-2xl border border-[#dfe5f1] bg-white p-5">
-                <p className="text-xs font-extrabold uppercase tracking-[0.2em] text-[#93a1bb]">Integrity Metrics</p>
-                <div className="mt-3">
-                  <div className="mb-1 flex items-center justify-between text-sm font-bold">
-                    <span>AI Confidence Score</span>
-                    <span className="text-[#1fae65]">98%</span>
-                  </div>
-                  <div className="h-2.5 rounded-full bg-[#e5edf5]">
-                    <div className="h-2.5 w-[98%] rounded-full bg-[#1fae65]" />
-                  </div>
-                </div>
-              </article>
-            </div>
-
-            <div className="space-y-4">
-              <article className="rounded-2xl border border-[#dfe5f1] bg-white p-5">
-                <div className="grid gap-4 md:grid-cols-[96px_1fr] md:items-center">
-                  <div className="relative grid h-24 w-24 place-items-center rounded-full border-8 border-[#7b2ff7] text-[42px] font-black">
-                    89%
-                  </div>
-                  <div>
-                    <h3 className="text-[36px] font-black leading-none">Technical Roadmap Progress</h3>
-                    <p className="mt-2 text-base text-[#63708d]">
-                      Alex has completed 24 out of 27 mandatory milestones for the "Senior Cloud Architect" career path.
-                    </p>
-                    <div className="mt-3 flex gap-2">
-                      <span className="rounded-lg bg-[#dff4e6] px-3 py-1 text-xs font-extrabold uppercase tracking-wide text-[#1ea85f]">Verified Path</span>
-                      <span className="rounded-lg bg-[#eee6fa] px-3 py-1 text-xs font-extrabold uppercase tracking-wide text-[#7b2ff7]">Meta Certification</span>
-                    </div>
-                  </div>
-                </div>
-              </article>
-
-              <article className="rounded-2xl border border-[#dfe5f1] bg-white p-5">
-                <div className="mb-4 flex items-center justify-between">
-                  <h3 className="text-[34px] font-black leading-none">Verified Technical Skills</h3>
-                  <p className="inline-flex items-center gap-1 text-xs font-bold text-[#9aa7c1]">
-                    <Lock className="h-3 w-3" />
-                    Encrypted on Hedera Hashgraph
-                  </p>
-                </div>
-                <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-                  {skillCards.map((skill) => (
-                    <div key={skill.label} className="rounded-xl border border-[#e7ecf4] bg-[#f8fafe] p-3">
-                      <p className="inline-flex h-6 w-6 items-center justify-center rounded-md bg-[#efe4ff] text-[10px] font-black text-[#7b2ff7]">
-                        {skill.icon}
-                      </p>
-                      <p className="mt-2 text-[18px] font-black leading-none">{skill.label}</p>
-                      <p className="mt-1 text-xs font-extrabold uppercase tracking-wide text-[#19a45d]">{skill.level}</p>
-                    </div>
-                  ))}
-                </div>
-              </article>
-
-              <article className="rounded-2xl border border-[#dfe5f1] bg-white p-5">
-                <div className="flex items-center justify-between border-b border-[#edf1f7] pb-3 text-sm text-[#7f8ba7]">
-                  <p className="font-semibold">EduVault Protocol</p>
-                  <p className="inline-flex items-center gap-2 font-extrabold uppercase tracking-wide text-[#49b66e]">
-                    <Check className="h-3.5 w-3.5" />
-                    Network status: operational
-                  </p>
-                </div>
-                <div className="pt-4">
-                  <p className="text-base font-black text-[#1b2740]">AWS Solutions Architect Associate Credential Verified</p>
-                  <p className="mt-1 text-sm text-[#8a96b1]">2023-09-05 09:15:44 · AWS-ACRED-88219</p>
-                  <p className="mt-3 text-sm font-bold text-[#7b2ff7]">View 14 more verification logs...</p>
-                </div>
-              </article>
+        <section className="bg-[linear-gradient(135deg,#5f1ce0_0%,#8f36ff_48%,#6f2bf3_100%)] py-16 text-white">
+          <div className="mx-auto w-full max-w-[1240px] px-4 md:px-8">
+            <p className="text-center text-sm font-semibold text-white/75">Why choose us</p>
+            <h2 className="mt-2 text-center text-[48px] font-black leading-none md:text-[60px]">
+              Best Learning Experience
+            </h2>
+            <div className="mt-9 grid gap-3 md:grid-cols-4">
+              {featureCards.map((feature) => (
+                <article key={feature.title} className="rounded-xl border border-white/20 bg-white/95 p-4 text-[#16223d]">
+                  <feature.icon className="h-4 w-4 text-[#7e2df8]" />
+                  <h3 className="mt-2 text-[22px] font-black leading-none">{feature.title}</h3>
+                  <p className="mt-2 text-xs leading-relaxed text-[#5c6883]">{feature.body}</p>
+                </article>
+              ))}
             </div>
           </div>
         </section>
 
-        <section id="marketplace" className="mx-auto w-full max-w-[1280px] px-4 py-12 md:px-8">
-          <div className="mb-5 flex items-center justify-between gap-3">
-            <div>
-              <h2 className="text-[52px] font-black leading-none">Marketplace Preview</h2>
-              <p className="mt-2 text-lg text-[#61708d]">Discover top-tier skills minted by the community.</p>
-            </div>
-            <Link href="/marketplace" className="text-sm font-black text-[#7b2ff7]">View Marketplace -&gt;</Link>
+        <section className="mx-auto grid w-full max-w-[1240px] gap-10 px-4 py-20 md:px-8 lg:grid-cols-[1fr_1.05fr] lg:items-center">
+          <div>
+            <p className="text-sm font-semibold text-[#7a86a3]">About us</p>
+            <h2 className="mt-2 text-[56px] font-black leading-[0.9]">
+              From <span className="text-[#7e2df8]">Coursework</span> to Career
+            </h2>
+            <p className="mt-4 max-w-[540px] text-lg leading-relaxed text-[#5d6a88]">
+              Most students graduate without clarity. EduVault bridges the gap between school and industry by translating
+              your academic history into a strategic career roadmap.
+            </p>
+            <Link
+              href="/signup"
+              className="mt-7 inline-flex rounded-[10px] bg-[#7e2df8] px-7 py-3 text-sm font-bold text-white shadow-[0_14px_24px_-16px_rgba(126,45,248,0.95)]"
+            >
+              Analyze My work
+            </Link>
           </div>
 
-          <div className="grid gap-5 md:grid-cols-3">
-            {marketplaceCards.map((card, index) => (
-              <article key={`${card.title}-${index}`} className="overflow-hidden rounded-2xl border border-[#dfe5f1] bg-white">
-                <div className={`grid h-40 place-items-center text-[#a17bf9] ${index % 2 === 1 ? "bg-[#c5ddf0]" : "bg-[#d7cff7]"}`}>
-                  {index % 2 === 1 ? <Database className="h-10 w-10" /> : <p className="text-[64px] font-black">&lt; &gt;</p>}
-                </div>
-                <div className="p-5">
-                  <div className="mb-2 flex gap-2 text-[10px] font-black uppercase tracking-wide">
-                    <span className="rounded bg-[#f0e7ff] px-2 py-1 text-[#7b2ff7]">{card.category}</span>
-                    <span className="rounded bg-[#ddf6e7] px-2 py-1 text-[#1ea85f]">Verified</span>
-                  </div>
-                  <h3 className="text-[36px] font-black leading-none">{card.title}</h3>
-                  <p className="mt-2 text-base leading-relaxed text-[#61708d]">{card.description}</p>
+          <div className="overflow-hidden rounded-[20px] border border-[#dfe6f3] shadow-[0_28px_50px_-36px_rgba(20,32,58,0.5)]">
+            <img
+              src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1200&q=80"
+              alt="students working with laptop"
+              className="h-[360px] w-full object-cover"
+            />
+          </div>
+        </section>
 
-                  <div className="mt-5 flex items-center justify-between border-t border-[#edf1f7] pt-4">
-                    <span className="text-sm font-semibold text-[#7483a0]">{card.author}</span>
-                    <span className="text-xl font-black text-[#7b2ff7]">{card.price}</span>
+        <section id="marketplace" className="mx-auto w-full max-w-[1240px] px-4 py-14 md:px-8">
+          <div className="mb-6 flex items-end justify-between gap-4">
+            <div>
+              <h2 className="text-[54px] font-black leading-none">Marketplace Preview</h2>
+              <p className="mt-2 text-base text-[#667492]">Discover top-tier skills minted by the community.</p>
+            </div>
+            <Link href="/marketplace" className="text-xs font-black uppercase tracking-wide text-[#7e2df8]">
+              View Marketplace -&gt;
+            </Link>
+          </div>
+
+          <div className="grid gap-4 md:grid-cols-3">
+            {marketCards.map((card, index) => (
+              <article key={`${card.title}-${index}`} className="overflow-hidden rounded-2xl border border-[#dfe6f3] bg-white">
+                <div className={`grid h-[158px] place-items-center ${card.color}`}>
+                  {card.icon === "DB" ? (
+                    <Database className="h-9 w-9 text-[#9b70fa]" />
+                  ) : (
+                    <Code2 className="h-9 w-9 text-[#9b70fa]" />
+                  )}
+                </div>
+                <div className="p-4">
+                  <div className="flex gap-2">
+                    <span className="rounded bg-[#f1e6ff] px-2 py-1 text-[10px] font-black uppercase tracking-wide text-[#7e2df8]">
+                      {card.category}
+                    </span>
+                    <span className="rounded bg-[#dff5e8] px-2 py-1 text-[10px] font-black uppercase tracking-wide text-[#1da35c]">
+                      Verified
+                    </span>
+                  </div>
+                  <h3 className="mt-3 text-[32px] font-black leading-none">{card.title}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-[#63708e]">{card.desc}</p>
+                  <div className="mt-4 flex items-center justify-between border-t border-[#edf2f8] pt-3">
+                    <p className="text-xs font-semibold text-[#6f7b97]">{card.author}</p>
+                    <p className="text-lg font-black text-[#7e2df8]">{card.price}</p>
                   </div>
                 </div>
               </article>
@@ -389,35 +365,39 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section className="mx-auto w-full max-w-[1280px] px-4 py-10 md:px-8">
-          <div className="relative overflow-hidden rounded-[28px] bg-[linear-gradient(135deg,#7d2bfa_0%,#9a46ff_46%,#6a28e6_100%)] px-5 py-14 text-center text-white shadow-[0_28px_60px_-36px_rgba(44,15,117,0.9)] md:px-10">
-            <div className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-white/10" />
-            <h2 className="text-[56px] font-black leading-none">Ready to Secure Your Hiring?</h2>
-            <p className="mx-auto mt-4 max-w-[670px] text-lg text-white/85">
-              Join over 500+ global enterprises that trust EduVault for secure, instantaneous candidate verification.
-            </p>
-            <div className="mt-8 flex flex-wrap justify-center gap-3">
-              <button type="button" className="h-12 rounded-xl bg-white px-8 text-sm font-extrabold text-[#7b2ff7]">
-                Create Enterprise Account
-              </button>
-              <button type="button" className="h-12 rounded-xl border border-white/30 px-8 text-sm font-extrabold text-white">
-                Speak to an Expert
-              </button>
-            </div>
+        <section className="mx-auto w-full max-w-[1240px] px-4 py-14 md:px-8">
+          <p className="text-center text-sm text-[#7d89a4]">Testimonial</p>
+          <h2 className="mt-1 text-center text-[50px] font-black leading-none">What Builders Are Saying</h2>
+          <div className="mt-8 grid gap-4 md:grid-cols-3">
+            {testimonials.map((item) => (
+              <article key={item.name} className="rounded-xl border border-[#e3e9f3] bg-white p-4">
+                <div className="flex items-center gap-3">
+                  <img src={item.image} alt={item.name} className="h-12 w-12 rounded-full object-cover" />
+                  <div>
+                    <p className="text-lg font-black leading-none">{item.name}</p>
+                    <p className="text-xs text-[#71809f]">{item.role}</p>
+                    <p className="mt-1 inline-flex items-center gap-1 text-xs font-bold text-[#f3b32f]">
+                      <Star className="h-3 w-3 fill-current" /> {item.rating}
+                    </p>
+                  </div>
+                </div>
+                <p className="mt-4 text-sm leading-relaxed text-[#5f6d8a]">"{item.quote}"</p>
+              </article>
+            ))}
           </div>
         </section>
 
-        <section className="mt-4 bg-[linear-gradient(110deg,#6724e7_0%,#963eff_56%,#7a2ff7_100%)]">
-          <div className="mx-auto flex w-full max-w-[1280px] flex-col gap-6 px-4 py-12 md:flex-row md:items-center md:justify-between md:px-8">
-            <h2 className="max-w-[560px] text-[52px] font-black leading-[0.95] text-white">
+        <section className="bg-[linear-gradient(110deg,#6422e7_0%,#9039ff_52%,#732cf3_100%)]">
+          <div className="mx-auto flex w-full max-w-[1240px] flex-col gap-6 px-4 py-10 md:flex-row md:items-center md:justify-between md:px-8">
+            <h2 className="max-w-[540px] text-[48px] font-black leading-[0.95] text-white">
               Your Academic Work Is More Valuable Than You Think.
             </h2>
-            <div className="flex w-full max-w-[560px] items-center gap-2 rounded-2xl bg-white/20 p-2">
-              <div className="flex h-12 flex-1 items-center rounded-xl bg-white/20 px-4 text-white/80">
-                <Search className="mr-2 h-4 w-4" />
+            <div className="flex w-full max-w-[530px] items-center gap-2 rounded-2xl bg-white/25 p-2">
+              <div className="flex h-12 flex-1 items-center gap-2 rounded-xl bg-white/20 px-3 text-white/85">
+                <Mail className="h-4 w-4" />
                 name@email.com
               </div>
-              <button type="button" className="h-12 rounded-xl bg-[#182743] px-10 text-sm font-extrabold text-white">
+              <button type="button" className="h-12 rounded-xl bg-[#182742] px-10 text-sm font-extrabold text-white">
                 Join now
               </button>
             </div>
@@ -425,51 +405,70 @@ export default function HomePage() {
         </section>
       </main>
 
-      <footer id="contact" className="bg-[#131f37] text-[#ccd5ea]">
-        <div className="mx-auto grid w-full max-w-[1280px] gap-10 px-4 py-14 md:grid-cols-4 md:px-8">
+      <footer id="contact" className="bg-[#131f37] text-[#cad4e8]">
+        <div className="mx-auto grid w-full max-w-[1240px] gap-8 px-4 py-14 md:grid-cols-4 md:px-8">
           <div>
             <Brand />
-            <p className="mt-5 max-w-[280px] text-base leading-relaxed text-[#b8c3db]">
+            <p className="mt-5 max-w-[280px] text-sm leading-relaxed text-[#b9c4db]">
               AI-powered career intelligence and on-chain productivity tools for ambitious students and creators.
             </p>
           </div>
 
           <div>
-            <p className="mb-3 text-[40px] font-black leading-none text-white">Quick links</p>
-            <ul className="space-y-2 text-lg">
-              <li><a href="#" className="hover:text-white">About us</a></li>
-              <li><a href="#" className="hover:text-white">Our Class</a></li>
-              <li><a href="#" className="hover:text-white">Contact</a></li>
+            <p className="mb-3 text-[34px] font-black leading-none text-white">Quick links</p>
+            <ul className="space-y-2 text-sm">
+              <li>
+                <a href="#" className="hover:text-white">
+                  About us
+                </a>
+              </li>
+              <li>
+                <a href="#" className="hover:text-white">
+                  Our Class
+                </a>
+              </li>
+              <li>
+                <a href="#" className="hover:text-white">
+                  Contact
+                </a>
+              </li>
             </ul>
           </div>
 
           <div>
-            <p className="mb-3 text-[40px] font-black leading-none text-white">Resources</p>
-            <ul className="space-y-2 text-lg">
-              <li><a href="#" className="hover:text-white">Support</a></li>
-              <li><a href="#" className="hover:text-white">Privacy policy</a></li>
-              <li><a href="#" className="hover:text-white">Terms & Conditions</a></li>
+            <p className="mb-3 text-[34px] font-black leading-none text-white">Resources</p>
+            <ul className="space-y-2 text-sm">
+              <li>
+                <a href="#" className="hover:text-white">
+                  Support
+                </a>
+              </li>
+              <li>
+                <a href="#" className="hover:text-white">
+                  Privacy policy
+                </a>
+              </li>
+              <li>
+                <a href="#" className="hover:text-white">
+                  Terms & Conditions
+                </a>
+              </li>
             </ul>
           </div>
 
           <div>
-            <p className="mb-3 text-[40px] font-black leading-none text-white">Social media</p>
-            <div className="flex items-center gap-4 text-[#f5f7fb]">
-              <a href="#" aria-label="facebook" className="rounded-full bg-white/10 p-2 hover:bg-white/20">
-                <Star className="h-4 w-4" />
-              </a>
-              <a href="#" aria-label="twitter" className="rounded-full bg-white/10 p-2 hover:bg-white/20">
-                <Twitter className="h-4 w-4" />
-              </a>
-              <a href="#" aria-label="instagram" className="rounded-full bg-white/10 p-2 hover:bg-white/20">
-                <Circle className="h-4 w-4" />
-              </a>
-              <a href="#" aria-label="linkedin" className="rounded-full bg-white/10 p-2 hover:bg-white/20">
-                <Linkedin className="h-4 w-4" />
-              </a>
-              <a href="#" aria-label="youtube" className="rounded-full bg-white/10 p-2 hover:bg-white/20">
-                <Youtube className="h-4 w-4" />
-              </a>
+            <p className="mb-3 text-[34px] font-black leading-none text-white">Social media</p>
+            <div className="flex gap-3">
+              {[Facebook, Twitter, Instagram, Linkedin, Youtube].map((Icon, idx) => (
+                <a
+                  key={idx}
+                  href="#"
+                  className="grid h-9 w-9 place-items-center rounded-full bg-white/10 text-white hover:bg-white/20"
+                  aria-label="social"
+                >
+                  <Icon className="h-4 w-4" />
+                </a>
+              ))}
             </div>
           </div>
         </div>
