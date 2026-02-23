@@ -31,7 +31,7 @@ function readLicensedPromptIds(): number[] {
 export default function PromptDetailPage() {
   const params = useParams<{ promptId: string }>();
   const promptId = Number(params.promptId);
-  const { address, isConnected } = useAccount();
+  const { isConnected } = useAccount();
   const { wrongChain } = useWrongChainState();
 
   const [purchaseOpen, setPurchaseOpen] = useState(false);
@@ -73,7 +73,7 @@ export default function PromptDetailPage() {
   return (
     <div className="space-y-6">
       <div className="space-y-2 text-sm text-[#8792ab]">
-        <p>Marketplace • Security Tools • {prompt.metadata?.title ?? `Prompt #${prompt.promptId}`}</p>
+        <p>Marketplace | Security Tools | {prompt.metadata?.title ?? `Prompt #${prompt.promptId}`}</p>
       </div>
 
       <div className="grid gap-5 xl:grid-cols-[1.8fr_1fr]">
@@ -87,13 +87,13 @@ export default function PromptDetailPage() {
                 <Badge>TOP RATED</Badge>
                 <Badge variant="secondary" className="bg-[#efe6ff] text-[#7b2ff7]">GPT-4 OPTIMIZED</Badge>
               </div>
-              <h1 className="text-[62px] font-black leading-none">{prompt.metadata?.title}</h1>
-              <p className="text-sm text-[#6f7c99]">⭐ 4.9 (124 reviews) • {prompt.metadata?.creatorHandle ?? "@creator"}</p>
+              <h1 className="text-4xl font-black leading-tight text-[#151f36] md:text-[44px]">{prompt.metadata?.title}</h1>
+              <p className="text-sm text-[#6f7c99]">4.9 stars (124 reviews) | {prompt.metadata?.creatorHandle ?? "@creator"}</p>
             </div>
           </div>
 
           <div className="space-y-3 rounded-2xl border border-[#e4eaf4] bg-white p-5">
-            <h2 className="text-[36px] font-black">Detailed Description</h2>
+            <h2 className="text-2xl font-black text-[#1a2338] md:text-[30px]">Detailed Description</h2>
             <p className="text-base leading-relaxed text-[#55627f]">
               {prompt.metadata?.shortDescription}
             </p>
@@ -103,7 +103,7 @@ export default function PromptDetailPage() {
           </div>
 
           <div className="space-y-3 rounded-2xl border border-[#e4eaf4] bg-white p-5">
-            <h2 className="text-[36px] font-black">What it produces</h2>
+            <h2 className="text-2xl font-black text-[#1a2338] md:text-[30px]">What it produces</h2>
             <div className="grid gap-3 sm:grid-cols-2">
               {(prompt.metadata?.features ?? []).map((feature) => (
                 <div key={feature} className="rounded-xl border border-[#e8eef7] bg-[#fbfdff] p-3">
@@ -114,7 +114,7 @@ export default function PromptDetailPage() {
           </div>
 
           <div className="space-y-3">
-            <h2 className="text-[42px] font-black">User Reviews</h2>
+            <h2 className="text-3xl font-black text-[#1a2338] md:text-[34px]">User Reviews</h2>
             <div className="grid gap-3 md:grid-cols-2">
               {[
                 { name: "Alex Dev", text: "Incredible value. It found a reentrancy vulnerability in our swap logic that Mythril missed." },
@@ -135,12 +135,12 @@ export default function PromptDetailPage() {
           <Card className="border-[#dfd2f4]">
             <CardContent className="space-y-4 p-5">
               <p className="text-sm font-bold uppercase tracking-wide text-[#8792ab]">Price per license</p>
-              <p className="text-[72px] font-black leading-none">{priceLabel} ETH</p>
+              <p className="text-5xl font-black leading-none text-[#151f36] md:text-[56px]">{priceLabel} ETH</p>
               <Button className="w-full" onClick={() => setPurchaseOpen(true)}>
                 Buy with Crypto
               </Button>
               <p className="text-sm text-[#65708b]">
-                {isConnected ? "Wallet Connected" : "Wallet not connected"} • Balance and gas checks enabled
+                {isConnected ? "Wallet connected" : "Wallet not connected"} | Balance and gas checks enabled
               </p>
 
               <Card className="border-[#ece4ff] bg-[#faf7ff]">

@@ -115,7 +115,7 @@ export default function PublishPromptPage() {
       if (receipt.status !== "success") throw new Error("Listing transaction reverted");
 
       toast.success("Prompt published to marketplace");
-      router.push("/marketplace");
+      router.push("/dashboard/marketplace");
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Publish failed");
     } finally {
@@ -126,8 +126,8 @@ export default function PublishPromptPage() {
   return (
     <div className="space-y-6">
       <div className="space-y-2">
-        <h1 className="text-[58px] font-black leading-none">Publish New Prompt</h1>
-        <p className="text-lg text-[#667391]">Share your productivity tools with the world and earn ETH.</p>
+        <h1 className="text-4xl font-black leading-tight text-[#151f36] md:text-[44px]">Publish New Prompt</h1>
+        <p className="text-sm text-[#667391] md:text-base">Share your productivity tools with the world and earn ETH.</p>
       </div>
 
       <div className="grid gap-5 xl:grid-cols-[1.7fr_1fr]">
@@ -238,7 +238,7 @@ export default function PublishPromptPage() {
                 </div>
                 <Card className="border-[#fff0cc] bg-[#fff8ea]">
                   <CardContent className="p-3 text-sm text-[#a8721e]">
-                    Tip: Prompts with clear “What it produces” bullet points sell 40% more often on EduVault.
+                    Tip: Prompts with clear "What it produces" bullet points sell 40% more often on EduVault.
                   </CardContent>
                 </Card>
               </div>
@@ -269,11 +269,11 @@ export default function PublishPromptPage() {
               <div className="h-36 bg-gradient-to-br from-[#7b2ff7] to-[#5b74ff]" />
               <div className="space-y-2 p-4">
                 <p className="text-xs font-bold uppercase tracking-wide text-[#7b2ff7]">{category} Tool</p>
-                <h3 className="text-[34px] font-black leading-none">{title || "Untitled Prompt"}</h3>
+                <h3 className="text-2xl font-black leading-tight text-[#151f36] md:text-[28px]">{title || "Untitled Prompt"}</h3>
                 <p className="text-sm text-[#667391]">{shortDescription}</p>
                 <div className="space-y-1 text-sm text-[#54627f]">
                   {(features.filter(Boolean).slice(0, 3) || []).map((feature) => (
-                    <p key={feature}>• {feature}</p>
+                    <p key={feature}>- {feature}</p>
                   ))}
                 </div>
                 <div className="pt-2">

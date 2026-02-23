@@ -3,7 +3,7 @@ import { z } from "zod";
 const clientEnvSchema = z.object({
   NEXT_PUBLIC_CHAIN_ID: z.string().default("16602"),
   NEXT_PUBLIC_RPC_URL: z.string().url().default("https://evmrpc-testnet.0g.ai"),
-  NEXT_PUBLIC_BLOCK_EXPLORER: z.string().url().default("https://chainscan-newton.0g.ai"),
+  NEXT_PUBLIC_BLOCK_EXPLORER: z.string().url().default("https://chainscan-galileo.0g.ai"),
   NEXT_PUBLIC_MARKETPLACE_ADDRESS: z.string().default(""),
   NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID: z.string().default(""),
   NEXT_PUBLIC_SUPABASE_URL: z.string().default(""),

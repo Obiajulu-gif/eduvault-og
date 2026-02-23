@@ -158,15 +158,15 @@ export default function ExecutePromptPage() {
     <div className="space-y-5">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h1 className="text-[58px] font-black leading-none">Executing Research Prompt</h1>
-          <p className="pt-2 text-lg text-[#667391]">Our AI is synthesizing your custom research framework using 0G Compute inference.</p>
+          <h1 className="text-4xl font-black leading-tight text-[#151f36] md:text-[44px]">Executing Research Prompt</h1>
+          <p className="pt-1 text-sm text-[#667391] md:text-base">Our AI is synthesizing your custom research framework using 0G Compute inference.</p>
         </div>
         <Button variant="outline" onClick={cancelExecution} disabled={!running}>Cancel Generation</Button>
       </div>
 
       <Card className="border-[#e4eaf4]">
         <CardContent className="space-y-4 p-5">
-          <h2 className="text-[36px] font-black">{prompt.metadata?.title}</h2>
+          <h2 className="text-2xl font-black text-[#1a2338] md:text-[30px]">{prompt.metadata?.title}</h2>
           <div className="grid gap-3 md:grid-cols-2">
             <div className="space-y-2">
               <label className="text-sm font-semibold text-[#4f5d79]">Research Goal</label>
