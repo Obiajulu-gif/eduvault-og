@@ -1,12 +1,13 @@
-import { ethers, network } from "hardhat";
+import { network } from "hardhat";
 import { mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
 
 async function main() {
-  const [deployer] = await ethers.getSigners();
+  const hre = await import("hardhat");
+  const [deployer] = await hre.ethers.getSigners();
   console.log("Deploying with:", deployer.address);
 
-  const factory = await ethers.getContractFactory("EduVaultMarketplace");
+  const factory = await hre.ethers.getContractFactory("EduVaultMarketplace");
   const contract = await factory.deploy();
   await contract.waitForDeployment();
 

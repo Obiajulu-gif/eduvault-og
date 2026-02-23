@@ -1,7 +1,18 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
 #files
 /designs/Eduvault_extracted
-/CUsersgooglAppDataLocalpnpmstorev3
+/CUsersgooglAppDataLocalpnpmstorev3
+
+# documentation
+/docs
+
+# IDE
+.idea
+.vscode
+*.swp
+*.swo
+
 # dependencies
 /node_modules
 /.pnp

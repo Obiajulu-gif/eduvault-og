@@ -1,10 +1,11 @@
 import { expect } from "chai";
-import { ethers } from "hardhat";
+import { ethers } from "ethers";
+import hre from "hardhat";
 
 describe("EduVaultMarketplace", function () {
   it("lists, buys, and withdraws proceeds", async function () {
-    const [seller, buyer] = await ethers.getSigners();
-    const factory = await ethers.getContractFactory("EduVaultMarketplace");
+    const [seller, buyer] = await hre.ethers.getSigners();
+    const factory = await hre.ethers.getContractFactory("EduVaultMarketplace");
     const market = await factory.deploy();
     await market.waitForDeployment();
 
@@ -22,8 +23,8 @@ describe("EduVaultMarketplace", function () {
   });
 
   it("rejects invalid listing price and self purchases", async function () {
-    const [seller] = await ethers.getSigners();
-    const factory = await ethers.getContractFactory("EduVaultMarketplace");
+    const [seller] = await hre.ethers.getSigners();
+    const factory = await hre.ethers.getContractFactory("EduVaultMarketplace");
     const market = await factory.deploy();
     await market.waitForDeployment();
 
