@@ -67,6 +67,11 @@ export default function PublishPromptPage() {
       return;
     }
 
+    if (!publicClient) {
+      toast.error("Wallet client not ready yet. Try again in a moment.");
+      return;
+    }
+
     if (!env.NEXT_PUBLIC_MARKETPLACE_ADDRESS) {
       toast.error("NEXT_PUBLIC_MARKETPLACE_ADDRESS missing in env");
       return;
