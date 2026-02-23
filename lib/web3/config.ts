@@ -40,5 +40,5 @@ export const wagmiConfig = getDefaultConfig({
   transports: {
     [ogChain.id]: http(env.NEXT_PUBLIC_RPC_URL),
   },
-  ssr: true,
+  ssr: false,
 });

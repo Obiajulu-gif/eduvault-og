@@ -1,14 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { Suspense, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { AlertTriangle, CircleHelp, UploadCloud } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 
-export default function MySkillsPage() {
+function MySkillsPageContent() {
   const searchParams = useSearchParams();
   const state = searchParams.get("state") ?? "empty";
   const [progress] = useState(65);
@@ -99,4 +99,12 @@ export default function MySkillsPage() {
   }, [progress, state]);
 
   return <div className="space-y-4">{content}</div>;
+}
+
+export default function MySkillsPage() {
+  return (
+    <Suspense fallback={null}>
+      <MySkillsPageContent />
+    </Suspense>
+  );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { Suspense, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { fetchPrompts } from "@/lib/client-api";
@@ -10,7 +10,7 @@ import { Card, CardContent } from "@/components/ui/card";
 
 const categories = ["All", "Writing", "Code", "Research"];
 
-export default function MarketplacePage() {
+function MarketplacePageContent() {
   const searchParams = useSearchParams();
   const forcedEmpty = searchParams.get("state") === "empty";
   const [activeCategory, setActiveCategory] = useState("All");
@@ -103,5 +103,13 @@ export default function MarketplacePage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function MarketplacePage() {
+  return (
+    <Suspense fallback={null}>
+      <MarketplacePageContent />
+    </Suspense>
   );
 }
