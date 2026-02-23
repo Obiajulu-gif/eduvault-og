@@ -1,0 +1,85 @@
+"use client";
+
+import { useQuery } from "@tanstack/react-query";
+import { useAccount, useBalance } from "wagmi";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { TxHistoryTable } from "@/components/wallet/tx-history-table";
+import { fetchTxHistory } from "@/lib/client-api";
+import { shortAddress } from "@/lib/utils";
+
+export default function WalletPage() {
+  const { address, isConnected, connector } = useAccount();
+  const { data: balance } = useBalance({ address, query: { enabled: Boolean(address) } });
+
+  const txQuery = useQuery({
+    queryKey: ["tx-history", address],
+    queryFn: () => fetchTxHistory(address),
+  });
+
+  const usdValue = Number(balance?.formatted ?? 0) * 1837;
+
+  return (
+    <div className="space-y-5">
+      <h1 className="text-[56px] font-black leading-none">Wallet Management</h1>
+
+      <div className="grid gap-4 xl:grid-cols-[1.8fr_1fr]">
+        <Card className="border-[#e4eaf4]">
+          <CardContent className="space-y-5 p-6">
+            <div className="space-y-1">
+              <p className="text-sm font-semibold text-[#7d88a2]">Total Balance</p>
+              <p className="text-[78px] font-black leading-none">{Number(balance?.formatted ?? 0).toFixed(2)} ETH</p>
+              <p className="text-xl font-semibold text-[#96a0b7]">≈ ${usdValue.toLocaleString(undefined, { maximumFractionDigits: 2 })} USD</p>
+            </div>
+            <div className="flex flex-wrap gap-3">
+              <Button>+ Add Funds</Button>
+              <Button variant="secondary">Withdraw</Button>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="border-[#e4eaf4]">
+          <CardContent className="space-y-3 p-5">
+            <div className="flex items-center justify-between">
+              <h2 className="text-[32px] font-black">Connected Wallets</h2>
+              <Badge>2 Active</Badge>
+            </div>
+
+            <div className="space-y-2">
+              <div className="rounded-xl border border-[#decdf7] bg-[#f7f0ff] p-3">
+                <p className="text-base font-bold text-[#27314a]">{connector?.name ?? "MetaMask"}</p>
+                <p className="text-sm text-[#7e89a4]">{isConnected ? shortAddress(address) : "Not connected"}</p>
+                <Badge className="mt-2">Primary</Badge>
+              </div>
+              <div className="rounded-xl border border-[#e3e9f3] bg-white p-3">
+                <p className="text-base font-bold text-[#27314a]">WalletConnect</p>
+                <p className="text-sm text-[#7e89a4]">0x2aB...F042</p>
+              </div>
+            </div>
+
+            <button className="w-full rounded-xl border border-dashed border-[#cfd8e8] px-3 py-2 text-sm font-semibold text-[#77839f]">
+              Connect New Wallet
+            </button>
+          </CardContent>
+        </Card>
+      </div>
+
+      {txQuery.isLoading ? (
+        <Card className="border-[#e4eaf4]"><CardContent className="h-[320px] animate-pulse p-5" /></Card>
+      ) : (
+        <TxHistoryTable rows={txQuery.data ?? []} />
+      )}
+
+      <Card className="border-[#f6d3d2] bg-[#fff2f1]">
+        <CardContent className="space-y-2 p-4">
+          <p className="text-[28px] font-black text-[#b42318]">Security Recommendation</p>
+          <p className="text-base text-[#cf4b41]">
+            Your wallet is currently the primary connection. We recommend enabling 2FA in account settings for an extra layer of protection.
+          </p>
+          <a href="/settings/security" className="text-sm font-bold underline text-[#b42318]">Configure Security Details</a>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
