@@ -34,6 +34,10 @@ export default function MyPromptsPage() {
       toast.error("Connect wallet first");
       return;
     }
+    if (!publicClient) {
+      toast.error("Wallet client not ready yet. Try again in a moment.");
+      return;
+    }
     if (!env.NEXT_PUBLIC_MARKETPLACE_ADDRESS) {
       toast.error("Marketplace address missing");
       return;

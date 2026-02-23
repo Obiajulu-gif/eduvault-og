@@ -53,6 +53,11 @@ export function PurchaseModal({
 
   const handleConfirm = async () => {
     if (disabled) return;
+    if (!publicClient) {
+      setStep("error");
+      setErrorMessage("Wallet client not ready yet. Try again in a moment.");
+      return;
+    }
     if (!env.NEXT_PUBLIC_MARKETPLACE_ADDRESS) {
       setStep("error");
       setErrorMessage("NEXT_PUBLIC_MARKETPLACE_ADDRESS is missing.");
