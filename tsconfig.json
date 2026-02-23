@@ -38,6 +38,9 @@
   ],
   "exclude": [
     "node_modules",
-    "test"
+    "test",
+    "scripts",
+    "contracts",
+    "hardhat.config.ts"
   ]
 }
