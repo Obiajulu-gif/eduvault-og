@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import {
   ArrowRight,
@@ -18,6 +20,10 @@ import {
   Wand2,
   Youtube,
 } from "lucide-react";
+import { useConnectModal } from "@rainbow-me/rainbowkit";
+import { useAccount, useChainId, useSwitchChain } from "wagmi";
+import { getClientEnv } from "@/lib/env";
+import { shortAddress } from "@/lib/utils";
 
 const processCards = [
   {
@@ -129,6 +135,9 @@ const testimonials = [
   },
 ];
 
+const env = getClientEnv();
+const targetChainId = Number(env.NEXT_PUBLIC_CHAIN_ID);
+
 function Brand() {
   return (
     <div className="flex items-center gap-2.5">
@@ -141,6 +150,29 @@ function Brand() {
 }
 
 export default function HomePage() {
+  const { openConnectModal } = useConnectModal();
+  const { address, isConnected } = useAccount();
+  const chainId = useChainId();
+  const { switchChain, isPending: switching } = useSwitchChain();
+  const wrongChain = isConnected && chainId !== targetChainId;
+
+  const handleWalletAction = () => {
+    if (!isConnected) {
+      openConnectModal?.();
+      return;
+    }
+
+    if (wrongChain) {
+      switchChain({ chainId: targetChainId });
+    }
+  };
+
+  const walletButtonLabel = !isConnected
+    ? "Connect 0G Galileo"
+    : wrongChain
+      ? (switching ? "Switching..." : "Switch to 0G Galileo")
+      : shortAddress(address, 4);
+
   return (
     <div className="min-h-screen bg-[#f8faff] text-[#121b32]">
       <header className="border-b border-[#e8edf6] bg-white">
@@ -161,15 +193,14 @@ export default function HomePage() {
             </a>
           </nav>
           <div className="flex items-center gap-4">
-            <Link href="/login" className="text-sm font-semibold text-[#293450]">
-              Login
-            </Link>
-            <Link
-              href="/signup"
-              className="rounded-[10px] bg-[#7e2df8] px-4 py-2 text-sm font-bold text-white shadow-[0_14px_24px_-16px_rgba(126,45,248,0.95)]"
+            <button
+              type="button"
+              onClick={handleWalletAction}
+              className="rounded-[10px] bg-[#7e2df8] px-4 py-2 text-sm font-bold text-white shadow-[0_14px_24px_-16px_rgba(126,45,248,0.95)] disabled:opacity-70"
+              disabled={switching}
             >
-              Sign Up
-            </Link>
+              {walletButtonLabel}
+            </button>
           </div>
         </div>
       </header>
@@ -190,12 +221,14 @@ export default function HomePage() {
             </p>
 
             <div className="mt-8 flex flex-wrap gap-3">
-              <Link
-                href="/signup"
+              <button
+                type="button"
+                onClick={handleWalletAction}
                 className="rounded-[10px] bg-[#7e2df8] px-7 py-3 text-sm font-bold text-white shadow-[0_14px_24px_-16px_rgba(126,45,248,0.95)]"
+                disabled={switching}
               >
-                Get Started
-              </Link>
+                {walletButtonLabel}
+              </button>
               <Link
                 href="/marketplace"
                 className="rounded-[10px] border border-[#ccd6e8] bg-white px-7 py-3 text-sm font-bold text-[#24314f]"
@@ -306,12 +339,14 @@ export default function HomePage() {
               Most students graduate without clarity. EduVault bridges the gap between school and industry by translating
               your academic history into a strategic career roadmap.
             </p>
-            <Link
-              href="/signup"
+            <button
+              type="button"
+              onClick={handleWalletAction}
               className="mt-7 inline-flex rounded-[10px] bg-[#7e2df8] px-7 py-3 text-sm font-bold text-white shadow-[0_14px_24px_-16px_rgba(126,45,248,0.95)]"
+              disabled={switching}
             >
-              Analyze My work
-            </Link>
+              {walletButtonLabel}
+            </button>
           </div>
 
           <div className="overflow-hidden rounded-[20px] border border-[#dfe6f3] shadow-[0_28px_50px_-36px_rgba(20,32,58,0.5)]">
@@ -397,8 +432,13 @@ export default function HomePage() {
                 <Mail className="h-4 w-4" />
                 name@email.com
               </div>
-              <button type="button" className="h-12 rounded-xl bg-[#182742] px-10 text-sm font-extrabold text-white">
-                Join now
+              <button
+                type="button"
+                onClick={handleWalletAction}
+                className="h-12 rounded-xl bg-[#182742] px-10 text-sm font-extrabold text-white disabled:opacity-70"
+                disabled={switching}
+              >
+                {walletButtonLabel}
               </button>
             </div>
           </div>
