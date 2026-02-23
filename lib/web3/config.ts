@@ -1,5 +1,5 @@
 import { getDefaultConfig } from "@rainbow-me/rainbowkit";
-import { createConfig, http } from "wagmi";
+import { http } from "wagmi";
 import type { Chain } from "viem";
 import { getClientEnv } from "@/lib/env";
 
@@ -32,15 +32,13 @@ export const ogChain: Chain = {
   testnet: true,
 };
 
-export const wagmiConfig = createConfig(
-  getDefaultConfig({
-    appName: "EduVault",
-    projectId:
-      env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || "demo-walletconnect-project-id",
-    chains: [ogChain],
-    transports: {
-      [ogChain.id]: http(env.NEXT_PUBLIC_RPC_URL),
-    },
-    ssr: true,
-  }),
-);
+export const wagmiConfig = getDefaultConfig({
+  appName: "EduVault",
+  projectId:
+    env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || "demo-walletconnect-project-id",
+  chains: [ogChain],
+  transports: {
+    [ogChain.id]: http(env.NEXT_PUBLIC_RPC_URL),
+  },
+  ssr: true,
+});

@@ -14,6 +14,8 @@ interface UploadResult {
   storage: "0g" | "mock";
 }
 
+type IndexerSigner = Parameters<Indexer["upload"]>[2];
+
 function normalizeRef(ref: string) {
   return ref.replace(/^0g:\/\//, "").trim();
 }
@@ -37,7 +39,7 @@ export async function uploadBufferToStorage(buffer: Buffer, fileName: string): P
 
   const filePath = await createTempFile(buffer, fileName);
   const provider = new ethers.JsonRpcProvider(env.OG_STORAGE_RPC_URL);
-  const signer = new ethers.Wallet(env.OG_STORAGE_PRIVATE_KEY, provider);
+  const signer = new ethers.Wallet(env.OG_STORAGE_PRIVATE_KEY, provider) as unknown as IndexerSigner;
   const indexer = new Indexer(env.OG_STORAGE_INDEXER_RPC);
 
   try {
