@@ -1,6 +1,8 @@
 "use client";
 
+import { useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   ArrowRight,
   BookOpenCheck,
@@ -11,7 +13,6 @@ import {
   Instagram,
   Linkedin,
   Mail,
-  Search,
   ShieldCheck,
   Sparkles,
   Star,
@@ -151,10 +152,11 @@ function Brand() {
 
 export default function HomePage() {
   const { openConnectModal } = useConnectModal();
-  const { address, isConnected } = useAccount();
+  const { address, isConnected, isConnecting } = useAccount();
   const chainId = useChainId();
   const { switchChain, isPending: switching } = useSwitchChain();
   const wrongChain = isConnected && chainId !== targetChainId;
+  const router = useRouter();
 
   const handleWalletAction = () => {
     if (!isConnected) {
@@ -167,10 +169,16 @@ export default function HomePage() {
     }
   };
 
+  useEffect(() => {
+    if (!isConnecting && isConnected && !wrongChain) {
+      router.replace("/overview");
+    }
+  }, [isConnected, isConnecting, wrongChain, router]);
+
   const walletButtonLabel = !isConnected
-    ? "Connect 0G Galileo"
+    ? "Connect Wallet"
     : wrongChain
-      ? (switching ? "Switching..." : "Switch to 0G Galileo")
+      ? (switching ? "Switching..." : "Switch Network")
       : shortAddress(address, 4);
 
   return (
