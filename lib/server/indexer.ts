@@ -1,7 +1,7 @@
 import { parseAbiItem } from "viem";
 import { getClientEnv, isMockMode } from "@/lib/env";
 import { EDUVAULT_MARKETPLACE_ABI } from "@/lib/contracts/eduvault-marketplace";
-import type { PromptListing, TxRecord } from "@/lib/types";
+import type { PromptListing, PromptMetadata, TxRecord } from "@/lib/types";
 import { MOCK_PROMPTS, MOCK_TXS } from "@/lib/mock-data";
 import { serverPublicClient } from "@/lib/server/public-client";
 import { resolveMetadataFromUri } from "@/lib/server/storage-client";
@@ -70,7 +70,7 @@ export async function indexMarketplaceData(force = false) {
       });
 
       const [seller, priceWei, metadataURI, isActive] = data;
-      const metadata = await resolveMetadataFromUri(metadataURI);
+      const metadata = await resolveMetadataFromUri<PromptMetadata>(metadataURI);
 
       return {
         promptId,
