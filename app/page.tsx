@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -182,12 +181,6 @@ export default function HomePage() {
 
     router.push("/dashboard");
   };
-
-  useEffect(() => {
-    if (!isConnecting && isConnected && !wrongChain) {
-      router.replace("/overview");
-    }
-  }, [isConnected, isConnecting, wrongChain, router]);
 
   const walletButtonLabel = !isConnected
     ? "Connect Wallet"

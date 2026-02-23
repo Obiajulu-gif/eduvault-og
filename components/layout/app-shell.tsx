@@ -20,7 +20,7 @@ import { useAccount, useBalance, useChainId, useDisconnect, useSwitchChain } fro
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils";
+import { cn, shortAddress } from "@/lib/utils";
 import { getClientEnv } from "@/lib/env";
 import { Logo } from "@/components/layout/logo";
 import { ChatPanel } from "@/components/chat/chat-panel";
