@@ -8,7 +8,7 @@ const env = getClientEnv();
 const chainId = Number(env.NEXT_PUBLIC_CHAIN_ID);
 
 export const ogChain: Chain = {
-  id: Number.isNaN(chainId) ? 16600 : chainId,
+  id: Number.isNaN(chainId) ? 16602 : chainId,
   name: "0G Newton Testnet",
   nativeCurrency: {
     name: "OG",

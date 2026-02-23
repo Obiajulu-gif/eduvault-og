@@ -1,3 +1,4 @@
+/// <reference types="node" />
 import "@nomicfoundation/hardhat-toolbox";
 import { HardhatUserConfig } from "hardhat/config";
 import * as dotenv from "dotenv";
@@ -22,7 +23,7 @@ const config: HardhatUserConfig = {
     },
     ogNewton: {
       url: process.env.NEXT_PUBLIC_RPC_URL || "https://evmrpc-testnet.0g.ai",
-      chainId: Number(process.env.NEXT_PUBLIC_CHAIN_ID || 16600),
+      chainId: Number(process.env.NEXT_PUBLIC_CHAIN_ID || 16602),
       accounts: deployerPk ? [deployerPk] : [],
     },
   },
