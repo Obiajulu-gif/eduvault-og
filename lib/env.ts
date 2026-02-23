@@ -6,6 +6,8 @@ const clientEnvSchema = z.object({
   NEXT_PUBLIC_BLOCK_EXPLORER: z.string().url().default("https://chainscan-newton.0g.ai"),
   NEXT_PUBLIC_MARKETPLACE_ADDRESS: z.string().default(""),
   NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID: z.string().default(""),
+  NEXT_PUBLIC_SUPABASE_URL: z.string().default(""),
+  NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string().default(""),
   NEXT_PUBLIC_ENABLE_MOCKS: z.enum(["true", "false"]).default("true"),
 });
 
@@ -22,6 +24,7 @@ const serverEnvSchema = z.object({
   OG_COMPUTE_DEFAULT_MODEL: z.string().default("qwen/qwen-2.5-7b-instruct"),
   OG_COMPUTE_PROMPT_FALLBACK_FEE: z.string().default("0.01"),
   INDEXER_START_BLOCK: z.string().default("0"),
+  SUPABASE_SERVICE_ROLE_KEY: z.string().optional(),
 });
 
 export type ClientEnv = z.infer<typeof clientEnvSchema>;
@@ -59,6 +62,11 @@ export function getServerEnv(): ServerEnv {
 
 export function isMockMode() {
   return getClientEnv().NEXT_PUBLIC_ENABLE_MOCKS === "true";
+}
+
+export function isSupabaseConfigured() {
+  const env = getClientEnv();
+  return Boolean(env.NEXT_PUBLIC_SUPABASE_URL && env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
 }
 
 export function assertStorageEnv() {

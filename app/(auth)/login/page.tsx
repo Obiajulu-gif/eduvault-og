@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Mail, Lock, Eye, AlertTriangle } from "lucide-react";
-import { Suspense, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { AuthShell } from "@/components/auth/auth-shell";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -16,11 +16,16 @@ function LoginPageContent() {
   const searchParams = useSearchParams();
   const { login } = useAuth();
 
-  const [email, setEmail] = useState("name@university.edu");
-  const [password, setPassword] = useState("password123");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(false);
   const [error, setError] = useState(searchParams.get("state") === "error" ? "Invalid email or password" : "");
   const [submitting, setSubmitting] = useState(false);
+
+  useEffect(() => {
+    const remembered = localStorage.getItem("eduvault-remember");
+    if (remembered) setEmail(remembered);
+  }, []);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();

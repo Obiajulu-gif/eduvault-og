@@ -1,42 +1,87 @@
-# EduVault (0G MVP)
+# EduVault (0G + Supabase MVP)
 
-EduVault is a decentralized AI Prompt Marketplace + Research Vault built on the 0G ecosystem.
+EduVault is a decentralized AI Prompt Marketplace + Research Vault on the 0G ecosystem.
 
-- Marketplace: creators list prompt tools, buyers purchase licenses on-chain.
-- Research Vault: licensed users execute prompts through 0G Compute and autosave artifacts to 0G Storage.
+- Landing page is now at `/` (public first screen).
+- Auth routes: `/login`, `/signup`, `/verify-email`, `/forgot-password`.
+- App routes: `/overview`, `/marketplace`, `/research-vault`, and related dashboard pages.
 
 ## Stack
 
-- Next.js App Router + TypeScript + Tailwind + shadcn-style components
-- wagmi + viem + RainbowKit (wallet connect + chain switch)
-- TanStack Query + Zod
+- Next.js App Router + TypeScript + Tailwind
+- RainbowKit + wagmi + viem
 - Hardhat + Solidity marketplace contract
 - 0G Storage SDK: `@0glabs/0g-ts-sdk`
 - 0G Compute broker: `@0glabs/0g-serving-broker`
+- Supabase Auth: `@supabase/supabase-js`
 
-## Architecture
+## Quick Start
 
-```text
-[User Wallet (RainbowKit)]
-          |
-          v
-   [Next.js Frontend]
-      |         |            \
-      |         |             \
-      v         v              v
-[Marketplace SC on 0G]   [Compute API]   [Storage API]
-      |                     |                |
-      |                     v                v
-      |             [0G Compute Broker]   [0G Storage Indexer]
-      v                     |                |
-   Events ---------> [Lightweight Indexer Cache] <----- metadata/artifacts refs
+1. Install dependencies:
+
+```bash
+pnpm install --no-frozen-lockfile
 ```
 
-## Contract
+2. Create local env file:
 
-`contracts/EduVaultMarketplace.sol`
+```bash
+cp .env.example .env.local
+```
 
-Implemented functions/events:
+3. Start dev server:
+
+```bash
+pnpm dev
+```
+
+4. Open:
+- `http://localhost:3000`
+
+## Environment Variables
+
+Use `.env.local` for local development and Vercel Environment Variables for deployment.
+
+### Public / Client
+
+- `NEXT_PUBLIC_CHAIN_ID`
+- `NEXT_PUBLIC_RPC_URL`
+- `NEXT_PUBLIC_BLOCK_EXPLORER`
+- `NEXT_PUBLIC_MARKETPLACE_ADDRESS`
+- `NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID`
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- `NEXT_PUBLIC_ENABLE_MOCKS`
+
+### Server / Secret
+
+- `DEPLOYER_PRIVATE_KEY`
+- `OG_STORAGE_PRIVATE_KEY`
+- `OG_COMPUTE_PRIVATE_KEY`
+- `SUPABASE_SERVICE_ROLE_KEY`
+
+## Supabase Setup
+
+1. Create a Supabase project.
+2. In Supabase Dashboard:
+- Go to `Authentication -> Providers` and enable `Email`.
+- Go to `Authentication -> URL Configuration`.
+- Add your app URLs:
+  - Local: `http://localhost:3000`
+  - Vercel production URL
+3. Copy keys into env:
+- `NEXT_PUBLIC_SUPABASE_URL` = Project URL
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY` = Publishable/anon key
+- `SUPABASE_SERVICE_ROLE_KEY` = service role key (server-only; never expose client-side)
+4. Set `NEXT_PUBLIC_ENABLE_MOCKS=false` to use Supabase + live 0G mode.
+
+## 0G Setup (How 0G Is Done)
+
+### 1) Chain + Contract
+
+Contract file: `contracts/EduVaultMarketplace.sol`
+
+Implemented methods/events:
 - `listPrompt(string metadataURI, uint256 priceWei)`
 - `buyPrompt(uint256 promptId) payable`
 - `withdrawProceeds()`
@@ -44,112 +89,95 @@ Implemented functions/events:
 - `hasLicense(uint256 promptId, address user)`
 - Events: `PromptListed`, `PromptPurchased`, `Withdrawn`
 
-Security:
-- `nonReentrant` buy/withdraw
-- `priceWei > 0` validation
-- self-purchase prevented
-- proceeds accounting per seller
+Compile and test:
 
-## App Routes
-
-Auth:
-- `/login`, `/signup`, `/forgot-password`, `/verify-email`
-- `/onboarding/goals`, `/onboarding/privacy`, `/onboarding/success`
-
-App:
-- `/overview`
-- `/my-skills`, `/my-skills/library`
-- `/marketplace`, `/marketplace/[promptId]`, `/marketplace/my-prompts`
-- `/creator/publish`
-- `/activities`
-- `/wallet`
-- `/research-vault`, `/research-vault/execute/[promptId]`
-- `/settings/security`
-
-## Run Locally
-
-1. Install dependencies:
-```bash
-pnpm install --no-frozen-lockfile
-```
-
-2. Configure env:
-```bash
-cp .env.example .env
-```
-
-3. Start app:
-```bash
-pnpm dev
-```
-
-4. Open:
-- App: `http://localhost:3000`
-
-## Deploy Contract
-
-1. Set `.env` values:
-- `DEPLOYER_PRIVATE_KEY`
-- `NEXT_PUBLIC_RPC_URL`
-- `NEXT_PUBLIC_CHAIN_ID`
-
-2. Compile/test:
 ```bash
 pnpm contract:compile
 pnpm contract:test
 ```
 
-3. Deploy:
+Deploy to 0G Newton:
+
 ```bash
 pnpm contract:deploy:newton
 ```
 
-4. Copy deployed address into:
-- `NEXT_PUBLIC_MARKETPLACE_ADDRESS`
+After deploy, set:
+- `NEXT_PUBLIC_MARKETPLACE_ADDRESS=<deployed_address>`
 
 Deployment metadata is written to `deployments/<network>.json`.
 
-## APIs
+### 2) 0G Storage Integration
 
-Storage:
-- `POST /api/storage/upload` (multipart)
+API routes:
+- `POST /api/storage/upload`
 - `POST /api/storage/upload-json`
 - `GET /api/storage/download?ref=...`
 
-Compute:
-- `POST /api/compute/infer` (skill mapping)
-- `POST /api/compute/stream` (SSE streaming)
+Used for:
+- Prompt template uploads
+- Prompt metadata uploads
+- Research artifact autosave/download
 
-Indexer:
+Required env for live mode:
+- `OG_STORAGE_RPC_URL`
+- `OG_STORAGE_INDEXER_RPC`
+- `OG_STORAGE_PRIVATE_KEY`
+
+### 3) 0G Compute Integration
+
+API routes:
+- `POST /api/compute/infer`
+- `POST /api/compute/stream`
+
+Used for:
+- Server-side inference proxying
+- Streaming model output to UI
+
+Required env for live mode:
+- `OG_COMPUTE_RPC_URL`
+- `OG_COMPUTE_PRIVATE_KEY`
+- Optional: `OG_COMPUTE_DEFAULT_PROVIDER`, `OG_COMPUTE_DEFAULT_MODEL`
+
+### 4) Lightweight Indexer
+
+API routes:
 - `GET /api/prompts`
 - `GET /api/prompts/[promptId]`
 - `GET /api/txs?address=...`
 
-## End-to-End Flow (Creator -> Buyer -> Execute)
+Env:
+- `INDEXER_START_BLOCK`
+
+## End-to-End Flow
 
 1. Creator publishes:
-- Go to `/creator/publish`
-- Upload prompt template (stored in 0G Storage)
-- Publish listing (metadata uploaded to 0G Storage + `listPrompt` on-chain)
+- Upload template (0G Storage)
+- Upload metadata (0G Storage)
+- Call `listPrompt` on 0G chain
 
 2. Buyer purchases:
-- Open `/marketplace/[promptId]`
-- Run purchase modal flow and confirm wallet tx (`buyPrompt`)
-- License unlocks execution CTA
+- Open listing `/marketplace/[promptId]`
+- Confirm wallet tx (`buyPrompt`)
 
-3. Execute + autosave:
-- Open `/research-vault/execute/[promptId]`
-- Start streaming compute job (`/api/compute/stream`)
-- Output is autosaved via `/api/storage/upload-json`
-- Download from `/research-vault`
+3. Execute and save:
+- Run prompt in `/research-vault/execute/[promptId]`
+- Stream output via compute API
+- Autosave output to 0G Storage
 
-## 0G Components Integrated
+## Build & Deploy
 
-- 0G Chain: smart contract listing + purchase + proceeds withdraw + event indexing
-- 0G Storage: prompt template uploads, metadata uploads, compute artifact autosave/download
-- 0G Compute: server-side inference proxy, streamed token/log updates to UI
+Local production build:
 
-## Notes
+```bash
+pnpm build
+```
 
-- `NEXT_PUBLIC_ENABLE_MOCKS=true` allows UI/demo flow without funded 0G keys.
-- Set it to `false` for strict live integrations and fail-fast env enforcement.
+Vercel:
+- Add all required env vars in Project Settings.
+- Ensure `NEXT_PUBLIC_ENABLE_MOCKS=false` for live integrations.
+
+## Security Notes
+
+- Never commit `.env.local`, private keys, or service keys.
+- If any private key was shared publicly, rotate it immediately and replace it everywhere.
