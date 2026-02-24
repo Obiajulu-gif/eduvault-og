@@ -1,4 +1,5 @@
 import { getDefaultConfig } from "@rainbow-me/rainbowkit";
+import { injectedWallet } from "@rainbow-me/rainbowkit/wallets";
 import { http } from "wagmi";
 import type { Chain } from "viem";
 import { getClientEnv } from "@/lib/env";
@@ -36,6 +37,12 @@ export const wagmiConfig = getDefaultConfig({
   appName: "EduVault",
   projectId:
     env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || "demo-walletconnect-project-id",
+  wallets: [
+    {
+      groupName: "Installed wallet",
+      wallets: [injectedWallet],
+    },
+  ],
   chains: [ogChain],
   transports: {
     [ogChain.id]: http(env.NEXT_PUBLIC_RPC_URL),
