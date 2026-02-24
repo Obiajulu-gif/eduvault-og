@@ -1,7 +1,7 @@
 import { createZGComputeNetworkBroker, type ZGComputeNetworkBroker } from "@0glabs/0g-serving-broker";
 import { ethers } from "ethers";
 import OpenAI from "openai";
-import { assertComputeEnv, isMockMode } from "@/lib/env";
+import { getNormalizedComputePrivateKey, getServerEnv, isMockMode } from "@/lib/env";
 import type { SkillMappingResult } from "@/lib/types";
 
 const NEURON_PER_OG = 1_000_000_000_000_000_000n;
@@ -13,15 +13,16 @@ async function getBroker() {
   if (brokerPromise) return brokerPromise;
 
   brokerPromise = (async () => {
-    const env = assertComputeEnv();
-    if (isMockMode() || !env.OG_COMPUTE_PRIVATE_KEY) {
-      console.log("[Compute] Mock mode enabled or no private key, using mock");
+    const env = getServerEnv();
+    const privateKey = getNormalizedComputePrivateKey();
+    if (isMockMode() || !privateKey) {
+      console.log("[Compute] Mock mode enabled or invalid/missing key, using mock");
       return null;
     }
 
     try {
       const provider = new ethers.JsonRpcProvider(env.OG_COMPUTE_RPC_URL);
-      const wallet = new ethers.Wallet(env.OG_COMPUTE_PRIVATE_KEY, provider);
+      const wallet = new ethers.Wallet(privateKey, provider);
       console.log("[Compute] Initializing broker with wallet:", wallet.address);
       const broker = await createZGComputeNetworkBroker(wallet);
       
@@ -105,7 +106,7 @@ async function setupAccount(broker: ZGComputeNetworkBroker, env: { OG_COMPUTE_DE
 }
 
 async function resolveProviderAndModel() {
-  const env = assertComputeEnv();
+  const env = getServerEnv();
   const broker = await getBroker();
   if (!broker) return null;
 

@@ -69,12 +69,38 @@ export function isSupabaseConfigured() {
   return Boolean(env.NEXT_PUBLIC_SUPABASE_URL && env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
 }
 
+export function normalizePrivateKey(value?: string | null) {
+  if (!value) return null;
+  const trimmed = value.trim();
+  if (!trimmed) return null;
+
+  // Common placeholders that break ethers Wallet creation.
+  if (/replace|your_private_key|changeme|example/i.test(trimmed)) {
+    return null;
+  }
+
+  const prefixed = trimmed.startsWith("0x") ? trimmed : `0x${trimmed}`;
+  if (!/^0x[0-9a-fA-F]{64}$/.test(prefixed)) {
+    return null;
+  }
+
+  return prefixed;
+}
+
+export function getNormalizedStoragePrivateKey() {
+  return normalizePrivateKey(getServerEnv().OG_STORAGE_PRIVATE_KEY);
+}
+
+export function getNormalizedComputePrivateKey() {
+  return normalizePrivateKey(getServerEnv().OG_COMPUTE_PRIVATE_KEY);
+}
+
 export function assertStorageEnv() {
   const env = getServerEnv();
   if (isMockMode()) return env;
-  if (!env.OG_STORAGE_PRIVATE_KEY) {
+  if (!getNormalizedStoragePrivateKey()) {
     throw new Error(
-      "Missing OG_STORAGE_PRIVATE_KEY. Set it in .env or enable NEXT_PUBLIC_ENABLE_MOCKS=true.",
+      "Missing or invalid OG_STORAGE_PRIVATE_KEY. Use a 64-hex private key (with or without 0x), or set NEXT_PUBLIC_ENABLE_MOCKS=true.",
     );
   }
   return env;
@@ -83,9 +109,9 @@ export function assertStorageEnv() {
 export function assertComputeEnv() {
   const env = getServerEnv();
   if (isMockMode()) return env;
-  if (!env.OG_COMPUTE_PRIVATE_KEY) {
+  if (!getNormalizedComputePrivateKey()) {
     throw new Error(
-      "Missing OG_COMPUTE_PRIVATE_KEY. Set it in .env or enable NEXT_PUBLIC_ENABLE_MOCKS=true.",
+      "Missing or invalid OG_COMPUTE_PRIVATE_KEY. Use a 64-hex private key (with or without 0x), or set NEXT_PUBLIC_ENABLE_MOCKS=true.",
     );
   }
   return env;

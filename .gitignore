@@ -37,6 +37,7 @@
 # misc
 .DS_Store
 *.pem
+/.eduvault
 
 # debug
 npm-debug.log*

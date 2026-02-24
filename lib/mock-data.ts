@@ -202,6 +202,72 @@ export const MOCK_PROMPTS: PromptListing[] = [
       version: BASE_VERSION,
     },
   },
+  {
+    promptId: 10,
+    seller: "0x9273f8c766d922f4a0ed8f5f89ce68cab3ea76aa",
+    priceWei: "15000000000000000",
+    metadataURI: "0g://mock-metadata-10",
+    isActive: true,
+    metadata: {
+      title: "Student Exam Master Planner",
+      category: "Research",
+      shortDescription:
+        "Turn course outlines and lecture notes into a week-by-week revision plan with measurable milestones.",
+      features: [
+        "Adaptive weekly study roadmap",
+        "Exam practice prompt sets",
+        "Weak-topic detection with remediation tasks",
+      ],
+      creatorHandle: "@CampusPlanner",
+      icon: "brain",
+      promptTemplateRef: "0g://mock-template-10",
+      version: BASE_VERSION,
+    },
+  },
+  {
+    promptId: 11,
+    seller: "0xa4fb17dc98aa44510afdb7dc67f0f2ef5bc5ce93",
+    priceWei: "18000000000000000",
+    metadataURI: "0g://mock-metadata-11",
+    isActive: true,
+    metadata: {
+      title: "Scholarship Essay Strategist",
+      category: "Writing",
+      shortDescription:
+        "Refine scholarship and admissions essays with stronger narrative arcs, evidence links, and impact framing.",
+      features: [
+        "Storyline and tone optimization",
+        "Evidence-backed impact statements",
+        "Reviewer-style scoring rubric",
+      ],
+      creatorHandle: "@EssayPilot",
+      icon: "sparkles",
+      promptTemplateRef: "0g://mock-template-11",
+      version: BASE_VERSION,
+    },
+  },
+  {
+    promptId: 12,
+    seller: "0xc1068d0427fe53cc5f214cc6dd9818b6f11f85f0",
+    priceWei: "35000000000000000",
+    metadataURI: "0g://mock-metadata-12",
+    isActive: true,
+    metadata: {
+      title: "Capstone Project Architect",
+      category: "Coding",
+      shortDescription:
+        "Plan and scope software capstone projects with architecture guidance, sprint sequencing, and risk controls.",
+      features: [
+        "Architecture option comparisons",
+        "Sprint-by-sprint delivery map",
+        "Capstone demo and defense checklist",
+      ],
+      creatorHandle: "@BuildLab",
+      icon: "code",
+      promptTemplateRef: "0g://mock-template-12",
+      version: BASE_VERSION,
+    },
+  },
 ];
 
 export const MOCK_TXS: TxRecord[] = [
@@ -256,5 +322,14 @@ export const MOCK_TXS: TxRecord[] = [
     status: "Success",
     txHash: "0x21...0bcf",
     promptId: 7,
+  },
+  {
+    id: "tx-7",
+    date: "2026-02-23T08:20:00.000Z",
+    action: "Prompt Listed",
+    amountEth: "+0.00",
+    status: "Success",
+    txHash: "0x55...9ca1",
+    promptId: 10,
   },
 ];
