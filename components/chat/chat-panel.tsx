@@ -158,6 +158,64 @@ export function ChatPanel({ className }: ChatPanelProps) {
     }
   };
 
+  const analyzeWithCompute = async () => {
+    if (!uploadedFile && !input.trim()) return;
+    setIsLoading(true);
+    const loadingMessage: Message = {
+      id: `loading-c-${Date.now()}`,
+      role: "assistant",
+      content: "",
+      timestamp: Date.now(),
+      isLoading: true,
+    };
+    setMessages((prev) => [...prev, loadingMessage]);
+
+    try {
+      // Build an input for skill mapping: prefer uploaded file content, else input
+      const contentToAnalyze = uploadedFile?.content ?? input.trim();
+      const prompt = `Analyze this content and return structured skill mapping:\n\n${contentToAnalyze}`;
+
+      const res = await fetch("/api/compute/infer", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ input: prompt }),
+      });
+
+      const payload = await res.json();
+      if (!res.ok) {
+        throw new Error(payload.error ?? "Compute inference failed");
+      }
+
+      const result = payload.result;
+      // Simple formatting of returned skill mapping
+      const skills = (result?.detectedSkills ?? [])
+        .slice(0, 6)
+        .map((s: any) => `${s.name} (${s.level}, ${Math.round((s.confidence ?? 0) * 100)}%)`)
+        .join(", ");
+      const strengths = (result?.strengths ?? []).slice(0, 3).join(" | ");
+      const gaps = (result?.gaps ?? []).slice(0, 3).join(" | ");
+      const formatted = `Skill mapping complete. Top skills: ${skills || "None"}. Strengths: ${strengths || "N/A"}. Gaps: ${gaps || "N/A"}.`;
+
+      setMessages((prev) =>
+        prev.map((m) =>
+          m.id === loadingMessage.id
+            ? { ...m, content: formatted, isLoading: false }
+            : m
+        )
+      );
+    } catch (err) {
+      setMessages((prev) =>
+        prev.map((m) =>
+          m.id === loadingMessage.id
+            ? { ...m, content: err instanceof Error ? err.message : "Compute failed", isLoading: false }
+            : m
+        )
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
@@ -280,17 +338,29 @@ export function ChatPanel({ className }: ChatPanelProps) {
                   className="min-h-[44px] resize-none"
                   disabled={isLoading}
                 />
-                <Button
-                  onClick={handleSubmit}
-                  disabled={!input.trim() || isLoading}
-                  className="shrink-0 bg-[#7b2ff7] hover:bg-[#6a21e0]"
-                >
-                  {isLoading ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                  ) : (
-                    <Send className="h-4 w-4" />
-                  )}
-                </Button>
+                <div className="flex gap-2">
+                  <Button
+                    onClick={handleSubmit}
+                    disabled={!input.trim() || isLoading}
+                    className="shrink-0 bg-[#7b2ff7] hover:bg-[#6a21e0]"
+                  >
+                    {isLoading ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <Send className="h-4 w-4" />
+                    )}
+                  </Button>
+
+                  <Button
+                    onClick={analyzeWithCompute}
+                    disabled={isLoading || (!uploadedFile && !input.trim())}
+                    variant="outline"
+                    className="shrink-0"
+                    title="Analyze with 0G Compute"
+                  >
+                    Analyze with 0G
+                  </Button>
+                </div>
               </div>
               <div className="mt-2 flex items-center gap-2 text-xs text-[#8792ab]">
                 <Briefcase className="h-3 w-3" />
