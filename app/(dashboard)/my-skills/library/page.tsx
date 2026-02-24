@@ -20,8 +20,8 @@ export default function SkillsLibraryPage() {
     <div className="space-y-5">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h1 className="text-[56px] font-black leading-none">My Skills Library</h1>
-          <p className="pt-2 text-lg text-[#667391]">24 active skills • Updated 2 hours ago</p>
+          <h1 className="text-4xl font-black leading-tight text-[#151f36] md:text-[44px]">My Skills Library</h1>
+          <p className="pt-1 text-sm text-[#667391] md:text-base">24 active skills | Updated 2 hours ago</p>
         </div>
         <div className="flex gap-2">
           <Button variant="outline">Export Data</Button>
@@ -32,7 +32,7 @@ export default function SkillsLibraryPage() {
       <Card className="border-[#7b2ff7] bg-gradient-to-r from-[#6d2cf6] to-[#8a44ff] text-white">
         <CardContent className="space-y-3 p-6">
           <p className="text-xs font-black uppercase tracking-wide text-[#ddc7ff]">Insight</p>
-          <h2 className="text-[42px] font-black">Your strongest growth area is Smart Contract Security.</h2>
+          <h2 className="text-2xl font-black leading-tight md:text-[32px]">Your strongest growth area is Smart Contract Security.</h2>
           <p className="text-sm text-[#efe8ff]">Based on recent uploads and prompt execution outcomes.</p>
         </CardContent>
       </Card>
@@ -41,7 +41,7 @@ export default function SkillsLibraryPage() {
         {libraryCards.map((item) => (
           <Card key={item.name} className="border-[#e2e8f3]">
             <CardContent className="space-y-3 p-4">
-              <p className="text-[30px] font-black leading-none">{item.name}</p>
+              <p className="text-xl font-black leading-tight text-[#1a2338] md:text-2xl">{item.name}</p>
               <div className="h-2 rounded-full bg-[#edf1f8]">
                 <div className="h-full rounded-full bg-[#7b2ff7]" style={{ width: `${item.progress}%` }} />
               </div>

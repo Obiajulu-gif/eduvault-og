@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import {
   ArrowRight,
   BookOpenCheck,
@@ -13,6 +13,7 @@ import {
   Instagram,
   Linkedin,
   Mail,
+  Search,
   ShieldCheck,
   Sparkles,
   Star,
@@ -22,9 +23,8 @@ import {
   Youtube,
 } from "lucide-react";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
-import { useAccount, useChainId, useSwitchChain } from "wagmi";
+import { useAccount, useChainId, useDisconnect, useSwitchChain } from "wagmi";
 import { getClientEnv } from "@/lib/env";
-import { shortAddress } from "@/lib/utils";
 
 const processCards = [
   {
@@ -151,35 +151,43 @@ function Brand() {
 }
 
 export default function HomePage() {
+  const router = useRouter();
   const { openConnectModal } = useConnectModal();
-  const { address, isConnected, isConnecting } = useAccount();
+  const { isConnected } = useAccount();
+  const { disconnect } = useDisconnect();
   const chainId = useChainId();
   const { switchChain, isPending: switching } = useSwitchChain();
   const wrongChain = isConnected && chainId !== targetChainId;
-  const router = useRouter();
+  const [pendingDashboardRedirect, setPendingDashboardRedirect] = useState(false);
+
+  useEffect(() => {
+    if (pendingDashboardRedirect && isConnected && !wrongChain) {
+      setPendingDashboardRedirect(false);
+      router.push("/dashboard");
+    }
+  }, [isConnected, pendingDashboardRedirect, router, wrongChain]);
 
   const handleWalletAction = () => {
     if (!isConnected) {
+      setPendingDashboardRedirect(true);
       openConnectModal?.();
       return;
     }
 
     if (wrongChain) {
+      setPendingDashboardRedirect(true);
       switchChain({ chainId: targetChainId });
+      return;
     }
+
+    router.push("/dashboard");
   };
 
-  useEffect(() => {
-    if (!isConnecting && isConnected && !wrongChain) {
-      router.replace("/overview");
-    }
-  }, [isConnected, isConnecting, wrongChain, router]);
-
   const walletButtonLabel = !isConnected
-    ? "Connect Wallet"
+    ? "Connect 0G Galileo"
     : wrongChain
-      ? (switching ? "Switching..." : "Switch Network")
-      : shortAddress(address, 4);
+      ? (switching ? "Switching..." : "Switch to 0G Galileo")
+      : "Go to Dashboard";
 
   return (
     <div className="min-h-screen bg-[#f8faff] text-[#121b32]">
@@ -187,28 +195,47 @@ export default function HomePage() {
         <div className="mx-auto flex h-[68px] w-full max-w-[1240px] items-center justify-between px-4 md:px-8">
           <Brand />
           <nav className="hidden items-center gap-8 text-sm font-semibold text-[#47526f] md:flex">
-            <a href="#home" className="hover:text-[#7e2df8]">
+            <Link href="/" className="hover:text-[#7e2df8]">
               Home
-            </a>
-            <a href="#marketplace" className="hover:text-[#7e2df8]">
+            </Link>
+            <Link href="/marketplace" className="hover:text-[#7e2df8]">
               Marketplace
-            </a>
-            <a href="#verify" className="hover:text-[#7e2df8]">
+            </Link>
+            <Link href="/verify" className="hover:text-[#7e2df8]">
               Verify
-            </a>
+            </Link>
             <a href="#contact" className="hover:text-[#7e2df8]">
               Contact
             </a>
           </nav>
-          <div className="flex items-center gap-4">
-            <button
-              type="button"
-              onClick={handleWalletAction}
-              className="rounded-[10px] bg-[#7e2df8] px-4 py-2 text-sm font-bold text-white shadow-[0_14px_24px_-16px_rgba(126,45,248,0.95)] disabled:opacity-70"
-              disabled={switching}
-            >
-              {walletButtonLabel}
-            </button>
+          <div className="flex items-center gap-3">
+            {isConnected && !wrongChain ? (
+              <>
+                <button
+                  type="button"
+                  onClick={() => router.push("/dashboard")}
+                  className="rounded-[10px] bg-[#7e2df8] px-4 py-2 text-sm font-bold text-white shadow-[0_14px_24px_-16px_rgba(126,45,248,0.95)]"
+                >
+                  Dashboard
+                </button>
+                <button
+                  type="button"
+                  onClick={() => disconnect()}
+                  className="rounded-[10px] border border-[#d5deed] bg-white px-4 py-2 text-sm font-bold text-[#24314f]"
+                >
+                  Disconnect Wallet
+                </button>
+              </>
+            ) : (
+              <button
+                type="button"
+                onClick={handleWalletAction}
+                className="rounded-[10px] bg-[#7e2df8] px-4 py-2 text-sm font-bold text-white shadow-[0_14px_24px_-16px_rgba(126,45,248,0.95)] disabled:opacity-70"
+                disabled={switching}
+              >
+                {walletButtonLabel}
+              </button>
+            )}
           </div>
         </div>
       </header>

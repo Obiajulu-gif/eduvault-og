@@ -34,8 +34,8 @@ function MarketplacePageContent() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h1 className="text-[56px] font-black leading-none">Marketplace</h1>
-          <p className="pt-2 text-lg text-[#667391]">Discover high-efficiency AI prompts curated for professional workflows.</p>
+          <h1 className="text-4xl font-black leading-tight text-[#151f36] md:text-[44px]">Marketplace</h1>
+          <p className="pt-1 text-sm text-[#667391] md:text-base">Discover high-efficiency AI prompts curated for professional workflows.</p>
         </div>
 
         <div className="flex items-center gap-2 text-sm text-[#7e89a4]">
@@ -81,10 +81,10 @@ function MarketplacePageContent() {
         <Card className="border-[#e4eaf4]">
           <CardContent className="space-y-5 p-8 text-center">
             <div className="mx-auto grid h-[210px] w-[210px] place-items-center rounded-full bg-[#f4f0ff] text-[#7b2ff7]">
-              <span className="text-5xl">⌕</span>
+              <span className="text-5xl">?</span>
             </div>
-            <h2 className="text-[54px] font-black">We couldn&apos;t find that exact tool</h2>
-            <p className="mx-auto max-w-xl text-lg text-[#667391]">
+            <h2 className="text-3xl font-black leading-tight text-[#151f36] md:text-[38px]">We couldn&apos;t find that exact tool</h2>
+            <p className="mx-auto max-w-xl text-sm text-[#667391] md:text-base">
               Try adjusting your search terms, exploring a different category, or let our community know what you&apos;re looking for.
             </p>
             <div className="flex flex-wrap justify-center gap-3">

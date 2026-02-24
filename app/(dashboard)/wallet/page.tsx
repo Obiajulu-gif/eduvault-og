@@ -1,8 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { useAccount, useBalance, useDisconnect } from "wagmi";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
+import { useAccount, useBalance } from "wagmi";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -13,8 +12,6 @@ import { shortAddress } from "@/lib/utils";
 export default function WalletPage() {
   const { address, isConnected, connector } = useAccount();
   const { data: balance } = useBalance({ address, query: { enabled: Boolean(address) } });
-  const { openConnectModal } = useConnectModal();
-  const { disconnect } = useDisconnect();
 
   const txQuery = useQuery({
     queryKey: ["tx-history", address],
@@ -25,15 +22,15 @@ export default function WalletPage() {
 
   return (
     <div className="space-y-5">
-      <h1 className="text-[56px] font-black leading-none">Wallet Management</h1>
+      <h1 className="text-4xl font-black leading-tight text-[#151f36] md:text-[44px]">Wallet Management</h1>
 
       <div className="grid gap-4 xl:grid-cols-[1.8fr_1fr]">
         <Card className="border-[#e4eaf4]">
           <CardContent className="space-y-5 p-6">
             <div className="space-y-1">
-              <p className="text-sm font-semibold text-[#7d88a2]">Total Balance</p>
-              <p className="text-[78px] font-black leading-none">{Number(balance?.formatted ?? 0).toFixed(4)} ETH</p>
-              <p className="text-xl font-semibold text-[#96a0b7]">≈ ${usdValue.toLocaleString(undefined, { maximumFractionDigits: 2 })} USD</p>
+              <p className="text-xs font-semibold uppercase tracking-wide text-[#7d88a2]">Total Balance</p>
+              <p className="text-5xl font-black leading-none text-[#151f36] md:text-[58px]">{Number(balance?.formatted ?? 0).toFixed(2)} ETH</p>
+              <p className="text-base font-semibold text-[#96a0b7]">~ ${usdValue.toLocaleString(undefined, { maximumFractionDigits: 2 })} USD</p>
             </div>
             <div className="flex flex-wrap gap-3">
               <Button>+ Add Funds</Button>
@@ -45,40 +42,25 @@ export default function WalletPage() {
         <Card className="border-[#e4eaf4]">
           <CardContent className="space-y-3 p-5">
             <div className="flex items-center justify-between">
-              <h2 className="text-[32px] font-black">Connected Wallet</h2>
-              {isConnected && <Badge>Active</Badge>}
+              <h2 className="text-2xl font-black text-[#1a2338] md:text-[28px]">Connected Wallets</h2>
+              <Badge>2 Active</Badge>
             </div>
 
             <div className="space-y-2">
-              {isConnected ? (
-                <div className="rounded-xl border border-[#decdf7] bg-[#f7f0ff] p-3">
-                  <p className="text-base font-bold text-[#27314a]">{connector?.name ?? "Wallet"}</p>
-                  <p className="text-sm text-[#7e89a4]">{shortAddress(address)}</p>
-                  <div className="mt-2 flex gap-2">
-                    <Badge>Primary</Badge>
-                    <Button variant="ghost" size="sm" className="h-6 px-2 text-xs text-[#7e89a4]" onClick={() => disconnect()}>
-                      Disconnect
-                    </Button>
-                  </div>
-                </div>
-              ) : (
-                <div className="rounded-xl border border-[#e3e9f3] bg-white p-4 text-center">
-                  <p className="text-sm text-[#7e89a4]">No wallet connected</p>
-                  <Button className="mt-3" onClick={() => openConnectModal?.()}>
-                    Connect Wallet
-                  </Button>
-                </div>
-              )}
+              <div className="rounded-xl border border-[#decdf7] bg-[#f7f0ff] p-3">
+                <p className="text-base font-bold text-[#27314a]">{connector?.name ?? "MetaMask"}</p>
+                <p className="text-sm text-[#7e89a4]">{isConnected ? shortAddress(address) : "Not connected"}</p>
+                <Badge className="mt-2">Primary</Badge>
+              </div>
+              <div className="rounded-xl border border-[#e3e9f3] bg-white p-3">
+                <p className="text-base font-bold text-[#27314a]">WalletConnect</p>
+                <p className="text-sm text-[#7e89a4]">0x2aB...F042</p>
+              </div>
             </div>
 
-            {isConnected && (
-              <button
-                className="w-full rounded-xl border border-dashed border-[#cfd8e8] px-3 py-2 text-sm font-semibold text-[#77839f] hover:border-[#7b2ff7] hover:text-[#7b2ff7]"
-                onClick={() => openConnectModal?.()}
-              >
-                Connect Another Wallet
-              </button>
-            )}
+            <button className="w-full rounded-xl border border-dashed border-[#cfd8e8] px-3 py-2 text-sm font-semibold text-[#77839f]">
+              Connect New Wallet
+            </button>
           </CardContent>
         </Card>
       </div>
@@ -91,7 +73,7 @@ export default function WalletPage() {
 
       <Card className="border-[#f6d3d2] bg-[#fff2f1]">
         <CardContent className="space-y-2 p-4">
-          <p className="text-[28px] font-black text-[#b42318]">Security Recommendation</p>
+          <p className="text-xl font-black text-[#b42318] md:text-2xl">Security Recommendation</p>
           <p className="text-base text-[#cf4b41]">
             Your wallet is currently the primary connection. We recommend enabling 2FA in account settings for an extra layer of protection.
           </p>
