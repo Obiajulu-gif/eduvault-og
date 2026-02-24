@@ -75,11 +75,13 @@ async function setupAccount(broker: ZGComputeNetworkBroker, env: { OG_COMPUTE_DE
     } catch (err: any) {
       const msg = (err?.reason || err?.message || "").toString();
       if (msg.includes("LedgerNotExists") || msg.includes("Account does not exist")) {
-        console.log("[Compute] No ledger found on-chain, creating with addLedger(0.1) OG...");
-        const initialOg = 0.1;
+        console.log("[Compute] No ledger found on-chain, creating with addLedger(parseEther(\"0.1\"))...");
+        const initialNeurons = ethers.parseEther("0.1");
+        const initialOgNumber = Number(ethers.formatEther(initialNeurons));
         try {
-          await (broker.ledger as any).addLedger(initialOg);
-          console.log("[Compute] Ledger created with", initialOg, "OG");
+          // SDK variants accept OG number; pass numeric OG to avoid internal toFixed errors
+          await (broker.ledger as any).addLedger(initialOgNumber);
+          console.log("[Compute] Ledger created request sent with", initialOgNumber, "OG");
           ledger = await broker.ledger.getLedger();
           console.log("[Compute] Ledger after creation:", ledger);
         } catch (addError: any) {
@@ -107,7 +109,24 @@ async function setupAccount(broker: ZGComputeNetworkBroker, env: { OG_COMPUTE_DE
 
     console.log("[Compute] Ledger balance (OG):", ethers.formatEther(rawBalance));
 
-    // Optional top-up is handled via CLI or the /api/compute/topup endpoint; no automatic deposit here.
+    // Optional: top up if below our internal target using neurons, per latest docs
+    if (rawBalance < TARGET_LEDGER_NEURONS) {
+      const topUpNeurons = TARGET_LEDGER_NEURONS - rawBalance;
+      const topUpOgNumber = Number(ethers.formatEther(topUpNeurons));
+      console.log(
+        "[Compute] Topping up ledger. Current (OG):",
+        ethers.formatEther(rawBalance),
+        "Target (OG):",
+        ethers.formatEther(TARGET_LEDGER_NEURONS),
+      );
+      try {
+        // depositFund accepts OG amount (number)
+        await (broker.ledger as any).depositFund(topUpOgNumber);
+        console.log("[Compute] Ledger topped up by", topUpOgNumber, "OG");
+      } catch (depositError: any) {
+        console.error("[Compute] depositFund error (non-fatal):", depositError?.message ?? depositError);
+      }
+    }
 
     const services = await broker.inference.listService();
     console.log("[Compute] Available services:", services.length);
