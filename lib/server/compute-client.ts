@@ -65,45 +65,63 @@ async function setupAccount(broker: ZGComputeNetworkBroker, env: { OG_COMPUTE_DE
   
   try {
     console.log("[Compute] Setting up account...");
-    
-    const ledger = await broker.ledger.getLedger();
-    console.log("[Compute] Ledger info:", ledger);
-    
-    // Support both legacy and current ledger shapes
-    const rawBalance =
+
+    // Ensure ledger exists – if not, create it following 0G SDK docs:
+    // await broker.ledger.addLedger(ethers.parseEther("0.1"));
+    let ledger: any | null = null;
+    try {
+      ledger = await broker.ledger.getLedger();
+      console.log("[Compute] Existing ledger info:", ledger);
+    } catch (err: any) {
+      const msg = (err?.reason || err?.message || "").toString();
+      if (msg.includes("LedgerNotExists") || msg.includes("Account does not exist")) {
+        console.log("[Compute] No ledger found on-chain, creating with addLedger(parseEther(\"0.1\"))...");
+        const initialNeurons = ethers.parseEther("0.1");
+        try {
+          await (broker.ledger as any).addLedger(initialNeurons);
+          console.log("[Compute] Ledger created with", ethers.formatEther(initialNeurons), "OG");
+          ledger = await broker.ledger.getLedger();
+          console.log("[Compute] Ledger after creation:", ledger);
+        } catch (addError: any) {
+          console.error("[Compute] addLedger failed:", addError?.message ?? addError);
+          throw addError;
+        }
+      } else {
+        console.error("[Compute] Unexpected getLedger error:", msg);
+        throw err;
+      }
+    }
+
+    // At this point we expect a ledger object
+    if (!ledger) {
+      throw new Error("Ledger not available after creation attempt");
+    }
+
+    // Normalize balance from possible shapes
+    const rawBalance: bigint =
       typeof (ledger as any).totalBalance === "bigint"
         ? (ledger as any).totalBalance
         : typeof (ledger as any).balance === "bigint"
-          ? (ledger as any).balance
-          : 0n;
-    
-    if (rawBalance === 0n) {
-      console.log("[Compute] No funded ledger detected, creating with initial balance (neurons):", ethers.formatEther(TARGET_LEDGER_NEURONS));
-      try {
-        // addLedger expects neurons (ethers.parseEther) in some SDK versions; cast to any to be safe
-        await (broker.ledger as any).addLedger(TARGET_LEDGER_NEURONS);
-        console.log("[Compute] Ledger created with", ethers.formatEther(TARGET_LEDGER_NEURONS), "OG");
-      } catch (addError: any) {
-        console.error("[Compute] addLedger error:", addError?.message ?? addError);
-      }
-    } else if (rawBalance < TARGET_LEDGER_NEURONS) {
+        ? (ledger as any).balance
+        : 0n;
+
+    console.log("[Compute] Ledger balance (OG):", ethers.formatEther(rawBalance));
+
+    // Optional: top up if below our internal target using neurons, per latest docs
+    if (rawBalance < TARGET_LEDGER_NEURONS) {
       const topUpNeurons = TARGET_LEDGER_NEURONS - rawBalance;
-      const topUpOg = Number(ethers.formatEther(topUpNeurons));
       console.log(
         "[Compute] Topping up ledger. Current (OG):",
         ethers.formatEther(rawBalance),
         "Target (OG):",
-        TARGET_LEDGER_OG,
+        ethers.formatEther(TARGET_LEDGER_NEURONS),
       );
       try {
-        // depositFund expects OG as a number (not neurons)
-        await broker.ledger.depositFund(topUpOg);
-        console.log("[Compute] Ledger topped up by", topUpOg, "OG");
+        await (broker.ledger as any).depositFund(topUpNeurons);
+        console.log("[Compute] Ledger topped up by", ethers.formatEther(topUpNeurons), "OG");
       } catch (depositError: any) {
-        console.error("[Compute] depositFund error:", depositError?.message ?? depositError);
+        console.error("[Compute] depositFund error (non-fatal):", depositError?.message ?? depositError);
       }
-    } else {
-      console.log("[Compute] Ledger exists with balance (OG):", ethers.formatEther(rawBalance));
     }
 
     const services = await broker.inference.listService();
