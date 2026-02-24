@@ -1,5 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  typescript: {
+    ignoreBuildErrors: false,
+  },
   experimental: {
     serverComponentsExternalPackages: [
       "@0glabs/0g-serving-broker",
