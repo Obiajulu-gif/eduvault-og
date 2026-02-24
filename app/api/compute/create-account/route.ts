@@ -30,11 +30,10 @@ export async function POST(request: Request) {
       return NextResponse.json({ ok: true, message: "Ledger already exists", ledger: existing });
     }
 
-    // call addLedger with parsed ether units (neurons). Use any cast because SDK types differ across versions.
-    const neurons = ethers.parseEther(String(amount));
+    // call addLedger with OG amount (number). SDK 0.6.x expects a numeric value and will convert internally.
     try {
       // SDK signature can vary; use any to avoid TS type mismatch at runtime
-      await (broker.ledger as any).addLedger(neurons);
+      await (broker.ledger as any).addLedger(amount);
     } catch (err: any) {
       return NextResponse.json({ error: "addLedger failed", detail: err?.message ?? String(err) }, { status: 500 });
     }

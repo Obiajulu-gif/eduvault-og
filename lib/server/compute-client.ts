@@ -75,11 +75,11 @@ async function setupAccount(broker: ZGComputeNetworkBroker, env: { OG_COMPUTE_DE
     } catch (err: any) {
       const msg = (err?.reason || err?.message || "").toString();
       if (msg.includes("LedgerNotExists") || msg.includes("Account does not exist")) {
-        console.log("[Compute] No ledger found on-chain, creating with addLedger(parseEther(\"0.1\"))...");
-        const initialNeurons = ethers.parseEther("0.1");
+        console.log("[Compute] No ledger found on-chain, creating with addLedger(0.1) OG...");
+        const initialOg = 0.1;
         try {
-          await (broker.ledger as any).addLedger(initialNeurons);
-          console.log("[Compute] Ledger created with", ethers.formatEther(initialNeurons), "OG");
+          await (broker.ledger as any).addLedger(initialOg);
+          console.log("[Compute] Ledger created with", initialOg, "OG");
           ledger = await broker.ledger.getLedger();
           console.log("[Compute] Ledger after creation:", ledger);
         } catch (addError: any) {
@@ -107,22 +107,7 @@ async function setupAccount(broker: ZGComputeNetworkBroker, env: { OG_COMPUTE_DE
 
     console.log("[Compute] Ledger balance (OG):", ethers.formatEther(rawBalance));
 
-    // Optional: top up if below our internal target using neurons, per latest docs
-    if (rawBalance < TARGET_LEDGER_NEURONS) {
-      const topUpNeurons = TARGET_LEDGER_NEURONS - rawBalance;
-      console.log(
-        "[Compute] Topping up ledger. Current (OG):",
-        ethers.formatEther(rawBalance),
-        "Target (OG):",
-        ethers.formatEther(TARGET_LEDGER_NEURONS),
-      );
-      try {
-        await (broker.ledger as any).depositFund(topUpNeurons);
-        console.log("[Compute] Ledger topped up by", ethers.formatEther(topUpNeurons), "OG");
-      } catch (depositError: any) {
-        console.error("[Compute] depositFund error (non-fatal):", depositError?.message ?? depositError);
-      }
-    }
+    // Optional top-up is handled via CLI or the /api/compute/topup endpoint; no automatic deposit here.
 
     const services = await broker.inference.listService();
     console.log("[Compute] Available services:", services.length);
