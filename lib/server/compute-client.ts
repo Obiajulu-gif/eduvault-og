@@ -78,11 +78,11 @@ async function setupAccount(broker: ZGComputeNetworkBroker, env: { OG_COMPUTE_DE
           : 0n;
     
     if (rawBalance === 0n) {
-      console.log("[Compute] No funded ledger detected, creating with initial balance (OG):", TARGET_LEDGER_OG);
+      console.log("[Compute] No funded ledger detected, creating with initial balance (neurons):", ethers.formatEther(TARGET_LEDGER_NEURONS));
       try {
-        // addLedger expects a numeric OG amount (not neurons)
-        await broker.ledger.addLedger(TARGET_LEDGER_OG);
-        console.log("[Compute] Ledger created with", TARGET_LEDGER_OG, "OG");
+        // addLedger expects neurons (ethers.parseEther) in some SDK versions; cast to any to be safe
+        await (broker.ledger as any).addLedger(TARGET_LEDGER_NEURONS);
+        console.log("[Compute] Ledger created with", ethers.formatEther(TARGET_LEDGER_NEURONS), "OG");
       } catch (addError: any) {
         console.error("[Compute] addLedger error:", addError?.message ?? addError);
       }
@@ -132,19 +132,6 @@ async function setupAccount(broker: ZGComputeNetworkBroker, env: { OG_COMPUTE_DE
           console.log("[Compute] Provider already acknowledged");
         } else {
           console.error("[Compute] Acknowledge error:", ackError.message);
-        }
-      }
-
-      try {
-        console.log("[Compute] Transferring funds to provider sub-account for inference...");
-        await broker.ledger.transferFund(providerAddress, "inference", INITIAL_PROVIDER_TRANSFER);
-        console.log("[Compute] Transferred", ethers.formatEther(INITIAL_PROVIDER_TRANSFER), "OG to provider");
-      } catch (transferError: any) {
-        const msg = transferError.message?.toLowerCase() || "";
-        if (msg.includes("already") || msg.includes("sufficient")) {
-          console.log("[Compute] Provider already has funds or transfer not required:", transferError.message);
-        } else {
-          console.error("[Compute] Transfer error:", transferError.message ?? transferError);
         }
       }
     }

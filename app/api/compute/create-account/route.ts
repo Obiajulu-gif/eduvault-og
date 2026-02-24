@@ -17,7 +17,20 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Compute broker not initialized" }, { status: 500 });
     }
 
-    // call addLedger with parsed ether units. Use any cast because SDK types differ across versions.
+    // Check existing ledger first
+    const existing = await broker.ledger.getLedger();
+    const rawBalance =
+      typeof (existing as any).totalBalance === "bigint"
+        ? (existing as any).totalBalance
+        : typeof (existing as any).balance === "bigint"
+        ? (existing as any).balance
+        : 0n;
+
+    if (rawBalance && rawBalance !== 0n) {
+      return NextResponse.json({ ok: true, message: "Ledger already exists", ledger: existing });
+    }
+
+    // call addLedger with parsed ether units (neurons). Use any cast because SDK types differ across versions.
     const neurons = ethers.parseEther(String(amount));
     try {
       // SDK signature can vary; use any to avoid TS type mismatch at runtime

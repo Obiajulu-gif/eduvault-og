@@ -26,9 +26,6 @@ const nextConfig = {
       { protocol: "https", hostname: "**" },
     ],
   },
-  compiler: {
-    removeConsole: process.env.NODE_ENV === "production",
-  },
   poweredByHeader: false,
 };
 
