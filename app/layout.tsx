@@ -1,7 +1,12 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
+import dynamic from "next/dynamic";
 import "./globals.css";
-import { AppProviders } from "@/components/providers/app-providers";
+
+const AppProviders = dynamic(
+  () => import("@/components/providers/app-providers").then((mod) => mod.AppProviders),
+  { ssr: false }
+);
 
 const manrope = localFont({
   src: [

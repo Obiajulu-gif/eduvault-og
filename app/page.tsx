@@ -13,7 +13,6 @@ import {
   Instagram,
   Linkedin,
   Mail,
-  Search,
   ShieldCheck,
   Sparkles,
   Star,
@@ -184,7 +183,7 @@ export default function HomePage() {
   };
 
   const walletButtonLabel = !isConnected
-    ? "Connect 0G Galileo"
+    ? "Connect Wallet"
     : wrongChain
       ? (switching ? "Switching..." : "Switch to 0G Galileo")
       : "Go to Dashboard";

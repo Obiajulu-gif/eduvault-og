@@ -1,9 +1,54 @@
-import { Upload, Sparkles } from "lucide-react";
+"use client";
+
+import { useRef, useState } from "react";
+import { Upload, Sparkles, FileUp } from "lucide-react";
+import { useAccount } from "wagmi";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { shortAddress } from "@/lib/utils";
 import Link from "next/link";
 
 export default function OverviewPage() {
+  const { address } = useAccount();
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const [uploadedFile, setUploadedFile] = useState<string | null>(null);
+  const [error, setError] = useState("");
+
+  const displayName = address ? shortAddress(address, 4) : "User";
+
+  const handleUpload = async (file: File) => {
+    setUploading(true);
+    setError("");
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      const response = await fetch("/api/storage/upload", {
+        method: "POST",
+        body: formData,
+      });
+      const payload = await response.json();
+      if (!response.ok) {
+        throw new Error(payload.error ?? "Upload failed");
+      }
+      setUploadedFile(payload.uri);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Upload failed");
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    const file = e.dataTransfer.files[0];
+    if (file) handleUpload(file);
+  };
+
   return (
     <div className="space-y-4">
       <section className="space-y-2">
@@ -29,6 +74,17 @@ export default function OverviewPage() {
                 Learn more
               </Button>
             </div>
+            {uploadedFile && (
+              <div className="rounded-lg border border-[#d7efe3] bg-[#ecfaf2] px-3 py-2 text-sm text-[#0d9f5b]">
+                <FileUp className="mr-2 inline h-4 w-4" />
+                Uploaded: {uploadedFile}
+              </div>
+            )}
+            {error && (
+              <div className="rounded-lg border border-[#fee4e2] bg-[#fff5f4] px-3 py-2 text-sm text-[#d92d20]">
+                {error}
+              </div>
+            )}
           </div>
 
           <div className="flex min-h-[200px] items-center justify-center rounded-2xl border border-dashed border-[#d7ddea] bg-[#fafcff]">
@@ -41,6 +97,17 @@ export default function OverviewPage() {
           </div>
         </CardContent>
       </Card>
+
+      <input
+        ref={inputRef}
+        type="file"
+        accept=".pdf,.doc,.docx,.txt"
+        className="hidden"
+        onChange={(e) => {
+          const file = e.target.files?.[0];
+          if (file) handleUpload(file);
+        }}
+      />
 
       <div className="grid gap-4 lg:grid-cols-2">
         {["Skill Overview", "Personalized Roadmap"].map((title) => (

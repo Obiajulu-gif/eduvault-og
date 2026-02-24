@@ -1,7 +1,8 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { useAccount, useBalance } from "wagmi";
+import { useAccount, useBalance, useDisconnect } from "wagmi";
+import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -12,6 +13,8 @@ import { shortAddress } from "@/lib/utils";
 export default function WalletPage() {
   const { address, isConnected, connector } = useAccount();
   const { data: balance } = useBalance({ address, query: { enabled: Boolean(address) } });
+  const { openConnectModal } = useConnectModal();
+  const { disconnect } = useDisconnect();
 
   const txQuery = useQuery({
     queryKey: ["tx-history", address],
@@ -47,20 +50,35 @@ export default function WalletPage() {
             </div>
 
             <div className="space-y-2">
-              <div className="rounded-xl border border-[#decdf7] bg-[#f7f0ff] p-3">
-                <p className="text-base font-bold text-[#27314a]">{connector?.name ?? "MetaMask"}</p>
-                <p className="text-sm text-[#7e89a4]">{isConnected ? shortAddress(address) : "Not connected"}</p>
-                <Badge className="mt-2">Primary</Badge>
-              </div>
-              <div className="rounded-xl border border-[#e3e9f3] bg-white p-3">
-                <p className="text-base font-bold text-[#27314a]">WalletConnect</p>
-                <p className="text-sm text-[#7e89a4]">0x2aB...F042</p>
-              </div>
+              {isConnected ? (
+                <div className="rounded-xl border border-[#decdf7] bg-[#f7f0ff] p-3">
+                  <p className="text-base font-bold text-[#27314a]">{connector?.name ?? "Wallet"}</p>
+                  <p className="text-sm text-[#7e89a4]">{shortAddress(address)}</p>
+                  <div className="mt-2 flex gap-2">
+                    <Badge>Primary</Badge>
+                    <Button variant="ghost" size="sm" className="h-6 px-2 text-xs text-[#7e89a4]" onClick={() => disconnect()}>
+                      Disconnect
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <div className="rounded-xl border border-[#e3e9f3] bg-white p-4 text-center">
+                  <p className="text-sm text-[#7e89a4]">No wallet connected</p>
+                  <Button className="mt-3" onClick={() => openConnectModal?.()}>
+                    Connect Wallet
+                  </Button>
+                </div>
+              )}
             </div>
 
-            <button className="w-full rounded-xl border border-dashed border-[#cfd8e8] px-3 py-2 text-sm font-semibold text-[#77839f]">
-              Connect New Wallet
-            </button>
+            {isConnected && (
+              <button
+                className="w-full rounded-xl border border-dashed border-[#cfd8e8] px-3 py-2 text-sm font-semibold text-[#77839f] hover:border-[#7b2ff7] hover:text-[#7b2ff7]"
+                onClick={() => openConnectModal?.()}
+              >
+                Connect Another Wallet
+              </button>
+            )}
           </CardContent>
         </Card>
       </div>

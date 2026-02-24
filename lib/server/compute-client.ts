@@ -1,48 +1,148 @@
 import { createZGComputeNetworkBroker, type ZGComputeNetworkBroker } from "@0glabs/0g-serving-broker";
 import { ethers } from "ethers";
 import OpenAI from "openai";
-import { assertComputeEnv, isMockMode } from "@/lib/env";
+import { getNormalizedComputePrivateKey, getServerEnv, isMockMode } from "@/lib/env";
 import type { SkillMappingResult } from "@/lib/types";
 
+const NEURON_PER_OG = 1_000_000_000_000_000_000n;
+
 let brokerPromise: Promise<ZGComputeNetworkBroker | null> | null = null;
+let isBrokerInitialized = false;
 
 async function getBroker() {
   if (brokerPromise) return brokerPromise;
 
   brokerPromise = (async () => {
-    const env = assertComputeEnv();
-    if (isMockMode() || !env.OG_COMPUTE_PRIVATE_KEY) {
+    const env = getServerEnv();
+    const privateKey = getNormalizedComputePrivateKey();
+    if (isMockMode() || !privateKey) {
+      console.log("[Compute] Mock mode enabled or invalid/missing key, using mock");
       return null;
     }
 
-    const provider = new ethers.JsonRpcProvider(env.OG_COMPUTE_RPC_URL);
-    const wallet = new ethers.Wallet(env.OG_COMPUTE_PRIVATE_KEY, provider);
-    return createZGComputeNetworkBroker(wallet);
+    try {
+      const provider = new ethers.JsonRpcProvider(env.OG_COMPUTE_RPC_URL);
+      const wallet = new ethers.Wallet(privateKey, provider);
+      console.log("[Compute] Initializing broker with wallet:", wallet.address);
+      const broker = await createZGComputeNetworkBroker(wallet);
+      
+      await setupAccount(broker, env);
+      
+      return broker;
+    } catch (error) {
+      console.error("[Compute] Failed to initialize broker:", error);
+      return null;
+    }
   })();
 
   return brokerPromise;
 }
 
+async function setupAccount(broker: ZGComputeNetworkBroker, env: { OG_COMPUTE_DEFAULT_PROVIDER?: string }) {
+  if (isBrokerInitialized) return;
+  
+  try {
+    console.log("[Compute] Setting up account...");
+    
+    const ledger = await broker.ledger.getLedger();
+    console.log("[Compute] Ledger info:", ledger);
+    
+    const hasLedger = ledger && ledger.totalBalance !== undefined && ledger.totalBalance !== 0n;
+    
+    if (!hasLedger) {
+      console.log("[Compute] Creating ledger with initial balance...");
+      await broker.ledger.addLedger(3);
+      console.log("[Compute] Ledger created with 3 OG");
+    } else {
+      console.log("[Compute] Ledger exists with balance:", ethers.formatEther(ledger.totalBalance), "OG");
+    }
+
+    const services = await broker.inference.listService();
+    console.log("[Compute] Available services:", services.length);
+    
+    let providerAddress = env.OG_COMPUTE_DEFAULT_PROVIDER;
+    
+    if (!providerAddress) {
+      const chatbotService = services.find((s: any) => s.serviceType === "chatbot");
+      if (chatbotService) {
+        providerAddress = chatbotService.provider;
+        console.log("[Compute] Using first chatbot provider:", providerAddress);
+      }
+    }
+    
+    if (providerAddress) {
+      try {
+        console.log("[Compute] Acknowledging provider:", providerAddress);
+        await broker.inference.acknowledgeProviderSigner(providerAddress);
+        console.log("[Compute] Provider acknowledged");
+      } catch (ackError: any) {
+        const msg = ackError.message?.toLowerCase() || "";
+        if (msg.includes("already") || msg.includes("acknowledged")) {
+          console.log("[Compute] Provider already acknowledged");
+        } else {
+          console.error("[Compute] Acknowledge error:", ackError.message);
+        }
+      }
+
+      try {
+        console.log("[Compute] Transferring funds to provider...");
+        await broker.ledger.transferFund(providerAddress, "inference", NEURON_PER_OG);
+        console.log("[Compute] Transferred 1 OG to provider");
+      } catch (transferError: any) {
+        const msg = transferError.message?.toLowerCase() || "";
+        if (msg.includes("already") || msg.includes("sufficient")) {
+          console.log("[Compute] Provider already has funds or transfer failed");
+        } else {
+          console.error("[Compute] Transfer error:", transferError.message);
+        }
+      }
+    }
+    
+    isBrokerInitialized = true;
+    console.log("[Compute] Account setup complete");
+  } catch (error) {
+    console.error("[Compute] Setup account error:", error);
+  }
+}
+
 async function resolveProviderAndModel() {
-  const env = assertComputeEnv();
+  const env = getServerEnv();
   const broker = await getBroker();
   if (!broker) return null;
 
-  const services = await broker.inference.listService();
-  const selected =
-    services.find((service: any) => service.provider.toLowerCase() === env.OG_COMPUTE_DEFAULT_PROVIDER?.toLowerCase()) || services[0];
+  try {
+    const services = await broker.inference.listService();
+    console.log("[Compute] Found", services.length, "services");
+    
+    let selected = services[0];
+    
+    if (env.OG_COMPUTE_DEFAULT_PROVIDER) {
+      const found = services.find((s: any) => 
+        s.provider.toLowerCase() === env.OG_COMPUTE_DEFAULT_PROVIDER?.toLowerCase()
+      );
+      if (found) selected = found;
+    } else {
+      const chatbot = services.find((s: any) => s.serviceType === "chatbot");
+      if (chatbot) selected = chatbot;
+    }
 
-  if (!selected) {
-    throw new Error("No 0G compute services available for configured wallet.");
+    if (!selected) {
+      throw new Error("No compute services available");
+    }
+
+    console.log("[Compute] Using provider:", selected.provider, "model:", selected.serviceType);
+
+    const meta = await broker.inference.getServiceMetadata(selected.provider);
+    return {
+      broker,
+      providerAddress: selected.provider,
+      endpoint: meta.endpoint,
+      model: env.OG_COMPUTE_DEFAULT_MODEL || meta.model,
+    };
+  } catch (error) {
+    console.error("[Compute] resolveProviderAndModel error:", error);
+    return null;
   }
-
-  const meta = await broker.inference.getServiceMetadata(selected.provider);
-  return {
-    broker,
-    providerAddress: selected.provider,
-    endpoint: meta.endpoint,
-    model: env.OG_COMPUTE_DEFAULT_MODEL || meta.model,
-  };
 }
 
 function mockSkillMapping(input: string): SkillMappingResult {
@@ -90,46 +190,47 @@ function mockSkillMapping(input: string): SkillMappingResult {
 export async function inferSkillMapping(input: string): Promise<SkillMappingResult> {
   const resolved = await resolveProviderAndModel().catch(() => null);
   if (!resolved) {
+    console.log("[Compute] Using mock skill mapping");
     return mockSkillMapping(input);
   }
 
   const { broker, providerAddress, endpoint, model } = resolved;
+  console.log("[Compute] Using real compute:", providerAddress, endpoint, model);
 
   try {
-    await broker.inference.acknowledgeProviderSigner(providerAddress);
-  } catch {
-    // ignore already acknowledged
-  }
+    const prompt = `Return ONLY valid JSON with this exact schema:\n${JSON.stringify(
+      {
+        detectedSkills: [{ name: "Solidity", level: "intermediate", confidence: 0.82 }],
+        strengths: ["..."],
+        gaps: ["..."],
+        roadmap: [{ week: 1, focus: "...", tasks: ["..."] }],
+      },
+      null,
+      2,
+    )}\n\nInput:\n${input}`;
 
-  const prompt = `Return ONLY valid JSON with this exact schema:\n${JSON.stringify(
-    {
-      detectedSkills: [{ name: "Solidity", level: "intermediate", confidence: 0.82 }],
-      strengths: ["..."],
-      gaps: ["..."],
-      roadmap: [{ week: 1, focus: "...", tasks: ["..."] }],
-    },
-    null,
-    2,
-  )}\n\nInput:\n${input}`;
+    const headers = await broker.inference.getRequestHeaders(providerAddress, prompt);
+    const openai = new OpenAI({ baseURL: endpoint, apiKey: "" });
 
-  const headers = await broker.inference.getRequestHeaders(providerAddress, prompt);
-  const openai = new OpenAI({ baseURL: endpoint, apiKey: "" });
+    const completion = await openai.chat.completions.create(
+      {
+        model,
+        messages: [{ role: "user", content: prompt }],
+        temperature: 0.2,
+      },
+      { headers: Object.fromEntries(Object.entries(headers).map(([k, v]) => [k, String(v)])) }
+    );
 
-  const completion = await openai.chat.completions.create(
-    {
-      model,
-      messages: [{ role: "user", content: prompt }],
-      temperature: 0.2,
-    },
-    { headers: Object.fromEntries(Object.entries(headers).map(([k, v]) => [k, String(v)])) },
-  );
+    const content = completion.choices[0]?.message?.content ?? "";
+    await broker.inference.processResponse(providerAddress, completion.id, content);
 
-  const content = completion.choices[0]?.message?.content ?? "";
-  await broker.inference.processResponse(providerAddress, completion.id, content);
-
-  try {
-    return JSON.parse(content) as SkillMappingResult;
-  } catch {
+    try {
+      return JSON.parse(content) as SkillMappingResult;
+    } catch {
+      return mockSkillMapping(input);
+    }
+  } catch (error) {
+    console.error("[Compute] Inference error:", error);
     return mockSkillMapping(input);
   }
 }
@@ -147,25 +248,26 @@ export async function streamPromptInference(
   const resolved = await resolveProviderAndModel().catch(() => null);
 
   if (!resolved) {
+    console.log("[Compute] Using mock streaming");
     const steps = [
-      "[09:44:12] Initial prompt received. Validating input...",
-      "[09:44:15] Accessing citation index and semantic vectors...",
-      "[09:44:19] Extracting thematic clusters from source material...",
-      "[09:44:24] Applying Socratic methodology for deductive reasoning...",
-      "[09:44:33] Synthesizing framework and action summary...",
+      "[init] Initial prompt received. Validating input...",
+      "[process] Accessing citation index and semantic vectors...",
+      "[analyze] Extracting thematic clusters from source material...",
+      "[reason] Applying Socratic methodology for deductive reasoning...",
+      "[complete] Synthesizing framework and action summary...",
     ];
 
     const outputChunks = [
-      "Executive Summary:\n",
-      "1. Core hypothesis established with strong signal confidence.\n",
-      "2. Contradictions resolved through source triangulation.\n",
-      "3. Recommended next action: run validation sprint on top two findings.\n",
+      "Based on your input, here's my analysis:\n\n",
+      "1. Key insights extracted from your request.\n",
+      "2. Strategic recommendations provided.\n",
+      "3. Actionable next steps outlined.\n",
     ];
 
     for (let i = 0; i < steps.length; i += 1) {
       callbacks.onLog(steps[i]);
       callbacks.onProgress(Math.min(85, 15 + i * 15));
-      await new Promise((resolve) => setTimeout(resolve, 650));
+      await new Promise((resolve) => setTimeout(resolve, 500));
       if (outputChunks[i]) callbacks.onChunk(outputChunks[i]);
     }
 
@@ -178,48 +280,51 @@ export async function streamPromptInference(
   }
 
   const { broker, endpoint, model, providerAddress } = resolved;
-  callbacks.onLog(`[init] Using provider ${providerAddress}`);
+  callbacks.onLog(`[init] Using provider: ${providerAddress}`);
 
   try {
-    await broker.inference.acknowledgeProviderSigner(providerAddress);
-  } catch {
-    // ignore
-  }
+    const headers = await broker.inference.getRequestHeaders(providerAddress, fullPrompt);
+    const openai = new OpenAI({ baseURL: endpoint, apiKey: "" });
 
-  const headers = await broker.inference.getRequestHeaders(providerAddress, fullPrompt);
-  const openai = new OpenAI({ baseURL: endpoint, apiKey: "" });
+    callbacks.onLog(`[request] Sending to ${endpoint}`);
 
-  const stream = await openai.chat.completions.create(
-    {
+    const stream = await openai.chat.completions.create(
+      {
+        model,
+        messages: [{ role: "user", content: fullPrompt }],
+        stream: true,
+        temperature: 0.35,
+      },
+      { headers: Object.fromEntries(Object.entries(headers).map(([k, v]) => [k, String(v)])) }
+    );
+
+    let complete = "";
+    let chunkCount = 0;
+    let chatId = "";
+
+    for await (const part of stream) {
+      chatId = part.id;
+      const content = part.choices?.[0]?.delta?.content ?? "";
+      if (!content) continue;
+      chunkCount += 1;
+      complete += content;
+      callbacks.onChunk(content);
+      callbacks.onLog(`[chunk:${chunkCount}] ${content.slice(0, 50)}...`);
+      callbacks.onProgress(Math.min(95, 15 + chunkCount * 3));
+    }
+
+    await broker.inference.processResponse(providerAddress, chatId, complete);
+    callbacks.onLog(`[complete] Response processed successfully`);
+    callbacks.onProgress(100);
+
+    return {
+      output: complete,
+      provider: providerAddress,
       model,
-      messages: [{ role: "user", content: fullPrompt }],
-      stream: true,
-      temperature: 0.35,
-    },
-    { headers: Object.fromEntries(Object.entries(headers).map(([k, v]) => [k, String(v)])) },
-  );
-
-  let complete = "";
-  let chunkCount = 0;
-  let chatId = "";
-
-  for await (const part of stream) {
-    chatId = part.id;
-    const content = part.choices?.[0]?.delta?.content ?? "";
-    if (!content) continue;
-    chunkCount += 1;
-    complete += content;
-    callbacks.onChunk(content);
-    callbacks.onLog(`[chunk:${chunkCount}] ${content.slice(0, 90)}`);
-    callbacks.onProgress(Math.min(95, 15 + chunkCount * 3));
+    };
+  } catch (error) {
+    console.error("[Compute] Stream error:", error);
+    callbacks.onLog(`[error] ${error instanceof Error ? error.message : "Unknown error"}`);
+    throw error;
   }
-
-  await broker.inference.processResponse(providerAddress, chatId, complete);
-  callbacks.onProgress(100);
-
-  return {
-    output: complete,
-    provider: providerAddress,
-    model,
-  };
 }

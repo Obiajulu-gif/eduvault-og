@@ -13,7 +13,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "No file uploaded" }, { status: 400 });
     }
 
-    const allowed = [".json", ".txt", ".prompt", ".pdf", ".docx"];
+    const allowed = [".json", ".txt", ".prompt", ".pdf", ".doc", ".docx", ".md", ".csv"];
     const ext = path.extname(file.name).toLowerCase();
     if (!allowed.includes(ext)) {
       return NextResponse.json({ error: "Unsupported file type" }, { status: 400 });
