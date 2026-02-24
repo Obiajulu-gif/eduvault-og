@@ -8,7 +8,7 @@ export default function MySkillsPage() {
       <div>
         <h1 className="text-4xl font-black leading-tight text-[#161f35] md:text-[42px]">Skill Mapping</h1>
         <p className="pt-1 text-sm text-[#667391] md:text-base">
-          Upload academic documents, analyze them with 0G Compute, and chat with Strategist AI.
+          Upload documents to 0G, run compute analysis, and get a personalized roadmap with actionable recommendations.
         </p>
       </div>
 

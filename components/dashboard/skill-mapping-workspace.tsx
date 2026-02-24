@@ -204,6 +204,13 @@ export function SkillMappingWorkspace() {
     ];
   }, [analysis, uploadedUri, working]);
 
+  const recommendations = useMemo(() => {
+    if (!analysis) return [];
+    const roadmapTasks = analysis.roadmap.flatMap((entry) => entry.tasks);
+    const gapActions = analysis.gaps.map((gap) => `Close gap: ${gap}`);
+    return [...roadmapTasks, ...gapActions].slice(0, 6);
+  }, [analysis]);
+
   return (
     <div className="grid gap-5 xl:grid-cols-[1.45fr_0.9fr]">
       <div className="space-y-4">
@@ -297,21 +304,87 @@ export function SkillMappingWorkspace() {
         </div>
 
         {analysis ? (
-          <Card className="border-[#e4eaf4]">
-            <CardContent className="space-y-3 p-5">
-              <h3 className="text-xl font-black text-[#1b2540]">Detected Skills</h3>
-              <div className="grid gap-2 md:grid-cols-2">
-                {analysis.detectedSkills.map((skill) => (
-                  <div key={skill.name} className="rounded-xl border border-[#e8eef7] bg-[#fbfdff] px-3 py-2">
-                    <p className="text-sm font-bold text-[#24304b]">{skill.name}</p>
-                    <p className="text-xs text-[#6f7c98]">
-                      {skill.level} | {Math.round(skill.confidence * 100)}% confidence
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
+          <div className="space-y-4">
+            <Card className="border-[#e4eaf4]">
+              <CardContent className="space-y-3 p-5">
+                <h3 className="text-xl font-black text-[#1b2540]">Detected Skills</h3>
+                <div className="grid gap-2 md:grid-cols-2">
+                  {analysis.detectedSkills.map((skill) => (
+                    <div key={skill.name} className="rounded-xl border border-[#e8eef7] bg-[#fbfdff] px-3 py-2">
+                      <p className="text-sm font-bold text-[#24304b]">{skill.name}</p>
+                      <p className="text-xs text-[#6f7c98]">
+                        {skill.level} | {Math.round(skill.confidence * 100)}% confidence
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            <div className="grid gap-3 md:grid-cols-2">
+              <Card className="border-[#e4eaf4]">
+                <CardContent className="space-y-2 p-4">
+                  <p className="text-xs font-black uppercase tracking-wide text-[#7b89a5]">Strengths</p>
+                  {analysis.strengths.length === 0 ? (
+                    <p className="text-sm text-[#6f7c98]">No strengths extracted yet.</p>
+                  ) : (
+                    analysis.strengths.slice(0, 4).map((entry) => (
+                      <p key={entry} className="text-sm font-semibold text-[#25314c]">
+                        - {entry}
+                      </p>
+                    ))
+                  )}
+                </CardContent>
+              </Card>
+
+              <Card className="border-[#e4eaf4]">
+                <CardContent className="space-y-2 p-4">
+                  <p className="text-xs font-black uppercase tracking-wide text-[#7b89a5]">Growth Gaps</p>
+                  {analysis.gaps.length === 0 ? (
+                    <p className="text-sm text-[#6f7c98]">No gaps identified.</p>
+                  ) : (
+                    analysis.gaps.slice(0, 4).map((entry) => (
+                      <p key={entry} className="text-sm font-semibold text-[#25314c]">
+                        - {entry}
+                      </p>
+                    ))
+                  )}
+                </CardContent>
+              </Card>
+            </div>
+
+            <Card className="border-[#e4eaf4]">
+              <CardContent className="space-y-3 p-5">
+                <h3 className="text-xl font-black text-[#1b2540]">Personal Roadmap</h3>
+                <div className="grid gap-3 md:grid-cols-3">
+                  {analysis.roadmap.map((entry) => (
+                    <div key={`week-${entry.week}`} className="rounded-xl border border-[#e8eef7] bg-[#fbfdff] p-3">
+                      <p className="text-xs font-black uppercase tracking-wide text-[#7b2ff7]">Week {entry.week}</p>
+                      <p className="mt-1 text-sm font-bold text-[#22304b]">{entry.focus}</p>
+                      <div className="mt-2 space-y-1 text-xs text-[#62708c]">
+                        {entry.tasks.map((task) => (
+                          <p key={task}>- {task}</p>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="border-[#e4eaf4]">
+              <CardContent className="space-y-2 p-5">
+                <h3 className="text-xl font-black text-[#1b2540]">Recommended Next Actions</h3>
+                <div className="grid gap-2 md:grid-cols-2">
+                  {recommendations.map((entry, index) => (
+                    <div key={`${entry}-${index}`} className="rounded-xl border border-[#e8eef7] bg-[#fbfdff] px-3 py-2 text-sm font-semibold text-[#24304b]">
+                      {index + 1}. {entry}
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         ) : null}
       </div>
 

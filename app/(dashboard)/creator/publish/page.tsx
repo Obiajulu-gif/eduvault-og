@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAccount, usePublicClient, useWriteContract } from "wagmi";
 import { parseEther } from "viem";
@@ -18,6 +18,7 @@ import { getClientEnv } from "@/lib/env";
 import { useWrongChainState } from "@/components/layout/app-shell";
 
 const env = getClientEnv();
+const isMockEnabled = env.NEXT_PUBLIC_ENABLE_MOCKS === "true";
 
 type WizardStep = "details" | "logic" | "pricing";
 
@@ -41,55 +42,106 @@ export default function PublishPromptPage() {
   const [templateRef, setTemplateRef] = useState("");
   const [publishing, setPublishing] = useState(false);
 
-  const canPublish = useMemo(
-    () => Boolean(title && shortDescription && templateRef && Number(priceEth) > 0),
-    [priceEth, shortDescription, templateRef, title],
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem("eduvault-draft-prompt");
+      if (!raw) return;
+      const parsed = JSON.parse(raw) as {
+        title?: string;
+        category?: string;
+        shortDescription?: string;
+        features?: string[];
+        priceEth?: string;
+        templateRef?: string;
+      };
+
+      if (parsed.title) setTitle(parsed.title);
+      if (parsed.category) setCategory(parsed.category);
+      if (parsed.shortDescription) setShortDescription(parsed.shortDescription);
+      if (Array.isArray(parsed.features) && parsed.features.length > 0) setFeatures(parsed.features);
+      if (parsed.priceEth) setPriceEth(parsed.priceEth);
+      if (parsed.templateRef) setTemplateRef(parsed.templateRef);
+    } catch {
+      // ignore malformed local draft
+    }
+  }, []);
+
+  const normalizedFeatures = useMemo(
+    () => features.map((entry) => entry.trim()).filter(Boolean),
+    [features],
   );
+
+  const canPublish = useMemo(() => {
+    const numericPrice = Number(priceEth);
+    return Boolean(
+      title.trim() &&
+      shortDescription.trim() &&
+      templateRef.trim() &&
+      normalizedFeatures.length > 0 &&
+      Number.isFinite(numericPrice) &&
+      numericPrice > 0,
+    );
+  }, [normalizedFeatures.length, priceEth, shortDescription, templateRef, title]);
 
   const currentStepIndex = stepOrder.indexOf(step);
 
   const saveDraft = () => {
     localStorage.setItem(
       "eduvault-draft-prompt",
-      JSON.stringify({ title, category, shortDescription, features, priceEth, templateRef }),
+      JSON.stringify({
+        title: title.trim(),
+        category,
+        shortDescription: shortDescription.trim(),
+        features: normalizedFeatures,
+        priceEth: priceEth.trim(),
+        templateRef: templateRef.trim(),
+      }),
     );
     toast.success("Draft saved locally");
   };
 
+  const validatePublishFields = () => {
+    if (!title.trim()) return "Prompt title is required";
+    if (!shortDescription.trim()) return "Short description is required";
+    if (!templateRef.trim()) return "Upload prompt logic/template first";
+    if (normalizedFeatures.length === 0) return "Add at least one feature bullet";
+    if (!Number.isFinite(Number(priceEth)) || Number(priceEth) <= 0) return "Enter a valid ETH price";
+    return null;
+  };
+
   const publish = async () => {
-    if (!isConnected || !address) {
-      toast.error("Connect wallet to publish");
+    const validationError = validatePublishFields();
+    if (validationError) {
+      toast.error(validationError);
       return;
     }
 
-    if (wrongChain) {
-      toast.error("Switch to configured 0G chain before publishing");
-      return;
-    }
+    const liveMode = Boolean(env.NEXT_PUBLIC_MARKETPLACE_ADDRESS) && !isMockEnabled;
+    if (liveMode) {
+      if (!isConnected || !address) {
+        toast.error("Connect wallet to publish");
+        return;
+      }
 
-    if (!publicClient) {
-      toast.error("Wallet client not ready yet. Try again in a moment.");
-      return;
-    }
+      if (wrongChain) {
+        toast.error("Switch to configured 0G chain before publishing");
+        return;
+      }
 
-    if (!env.NEXT_PUBLIC_MARKETPLACE_ADDRESS) {
-      toast.error("NEXT_PUBLIC_MARKETPLACE_ADDRESS missing in env");
-      return;
-    }
-
-    if (!canPublish) {
-      toast.error("Complete all required fields");
-      return;
+      if (!publicClient) {
+        toast.error("Wallet client not ready yet. Try again in a moment.");
+        return;
+      }
     }
 
     setPublishing(true);
     try {
       const metadata = {
-        title,
+        title: title.trim(),
         category,
-        shortDescription,
-        features,
-        creatorHandle: `@${address.slice(2, 8)}`,
+        shortDescription: shortDescription.trim(),
+        features: normalizedFeatures,
+        creatorHandle: address ? `@${address.slice(2, 8)}` : "@demo_creator",
         icon: "code",
         promptTemplateRef: templateRef,
         version: "1.0.0",
@@ -104,17 +156,36 @@ export default function PublishPromptPage() {
       const uploadPayload = await uploadResponse.json();
       if (!uploadResponse.ok) throw new Error(uploadPayload.error ?? "Failed to upload metadata");
 
-      const hash = await writeContractAsync({
-        address: env.NEXT_PUBLIC_MARKETPLACE_ADDRESS as `0x${string}`,
-        abi: EDUVAULT_MARKETPLACE_ABI,
-        functionName: "listPrompt",
-        args: [uploadPayload.uri, parseEther(priceEth)],
-      });
+      if (!liveMode) {
+        const mockResponse = await fetch("/api/prompts", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            seller: address,
+            metadata,
+            metadataURI: uploadPayload.uri,
+            priceEth,
+          }),
+        });
+        const mockPayload = await mockResponse.json();
+        if (!mockResponse.ok) {
+          throw new Error(mockPayload.error ?? "Failed to publish prompt in mock mode");
+        }
+        toast.success("Prompt published in demo mode");
+      } else {
+        const hash = await writeContractAsync({
+          address: env.NEXT_PUBLIC_MARKETPLACE_ADDRESS as `0x${string}`,
+          abi: EDUVAULT_MARKETPLACE_ABI,
+          functionName: "listPrompt",
+          args: [uploadPayload.uri, parseEther(priceEth)],
+        });
 
-      const receipt = await publicClient.waitForTransactionReceipt({ hash });
-      if (receipt.status !== "success") throw new Error("Listing transaction reverted");
+        const receipt = await publicClient!.waitForTransactionReceipt({ hash });
+        if (receipt.status !== "success") throw new Error("Listing transaction reverted");
+        toast.success("Prompt published to marketplace");
+      }
 
-      toast.success("Prompt published to marketplace");
+      localStorage.removeItem("eduvault-draft-prompt");
       router.push("/dashboard/marketplace");
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Publish failed");
@@ -256,7 +327,13 @@ export default function PublishPromptPage() {
                 }}
                 disabled={publishing || isPending || (step === "pricing" && !canPublish)}
               >
-                {step === "pricing" ? (publishing || isPending ? "Publishing..." : "Publish to Marketplace") : "Continue"}
+                {step === "pricing"
+                  ? (publishing || isPending
+                    ? "Publishing..."
+                    : isMockEnabled || !env.NEXT_PUBLIC_MARKETPLACE_ADDRESS
+                      ? "Publish Demo Listing"
+                      : "Publish to Marketplace")
+                  : "Continue"}
               </Button>
             </div>
           </CardContent>

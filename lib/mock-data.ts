@@ -1,5 +1,7 @@
 import type { PromptListing, TxRecord } from "@/lib/types";
 
+const BASE_VERSION = "1.0.0";
+
 export const MOCK_PROMPTS: PromptListing[] = [
   {
     promptId: 1,
@@ -18,10 +20,10 @@ export const MOCK_PROMPTS: PromptListing[] = [
         "Gas optimization suite",
         "Unit test templates",
       ],
-      creatorHandle: "@BlockchainWizard",
+      creatorHandle: "@CryptoDev_99",
       icon: "shield",
       promptTemplateRef: "0g://mock-template-1",
-      version: "1.0.0",
+      version: BASE_VERSION,
     },
   },
   {
@@ -34,7 +36,7 @@ export const MOCK_PROMPTS: PromptListing[] = [
       title: "Technical Writer GPT Max",
       category: "Writing",
       shortDescription:
-        "Transform messy notes into high-converting documentation and SEO-optimized blog posts.",
+        "Transform rough notes into polished docs, release notes, and SEO-ready technical content.",
       features: [
         "Technical docs from rough notes",
         "SEO keyword expansion",
@@ -43,7 +45,7 @@ export const MOCK_PROMPTS: PromptListing[] = [
       creatorHandle: "@PenMaster_X",
       icon: "code",
       promptTemplateRef: "0g://mock-template-2",
-      version: "1.0.0",
+      version: BASE_VERSION,
     },
   },
   {
@@ -56,7 +58,7 @@ export const MOCK_PROMPTS: PromptListing[] = [
       title: "Market Researcher Pro",
       category: "Research",
       shortDescription:
-        "Summarize whitepapers into executive briefs with decision-ready insights.",
+        "Summarize long reports and whitepapers into executive-level briefs with actionable insights.",
       features: [
         "Literature synthesis",
         "Competitive analysis matrix",
@@ -65,7 +67,139 @@ export const MOCK_PROMPTS: PromptListing[] = [
       creatorHandle: "@AlphaSeeker",
       icon: "research",
       promptTemplateRef: "0g://mock-template-3",
-      version: "1.0.0",
+      version: BASE_VERSION,
+    },
+  },
+  {
+    promptId: 4,
+    seller: "0x9e52e7dcba6d6d5f80890e5e9a5ddac9c2b67f1c",
+    priceWei: "120000000000000000",
+    metadataURI: "0g://mock-metadata-4",
+    isActive: true,
+    metadata: {
+      title: "Rust Zero-Knowledge Architect",
+      category: "Coding",
+      shortDescription:
+        "Design Rust-based zero-knowledge proof systems with practical optimization guidance.",
+      features: [
+        "Circuit design checklist",
+        "Proof-system tradeoff matrix",
+        "Rust code generation scaffolds",
+      ],
+      creatorHandle: "@ZK_Wizard",
+      icon: "flask",
+      promptTemplateRef: "0g://mock-template-4",
+      version: BASE_VERSION,
+    },
+  },
+  {
+    promptId: 5,
+    seller: "0x6fcadba9c4d15f93ac4590a2b90f91b33f8c23ac",
+    priceWei: "30000000000000000",
+    metadataURI: "0g://mock-metadata-5",
+    isActive: true,
+    metadata: {
+      title: "Psychology-Based UI/UX Audit",
+      category: "Research",
+      shortDescription:
+        "Evaluate UX against cognitive principles and produce a prioritized conversion improvement backlog.",
+      features: [
+        "Cognitive bias scoring",
+        "Friction heatmap summary",
+        "Prioritized conversion tasks",
+      ],
+      creatorHandle: "@UX_Expert",
+      icon: "brain",
+      promptTemplateRef: "0g://mock-template-5",
+      version: BASE_VERSION,
+    },
+  },
+  {
+    promptId: 6,
+    seller: "0x2aa9d88ff1209fe85fbd8e16f33f9de17937dd9a",
+    priceWei: "150000000000000000",
+    metadataURI: "0g://mock-metadata-6",
+    isActive: true,
+    metadata: {
+      title: "On-Chain Data Scientist",
+      category: "Research",
+      shortDescription:
+        "Generate high-quality SQL and analytics narratives for on-chain dashboards and intelligence reports.",
+      features: [
+        "SQL query generation",
+        "Dashboard KPI recommendations",
+        "Narrative insight framing",
+      ],
+      creatorHandle: "@DuneMaster",
+      icon: "database",
+      promptTemplateRef: "0g://mock-template-6",
+      version: BASE_VERSION,
+    },
+  },
+  {
+    promptId: 7,
+    seller: "0x5ce0a8af6c09efec02e17dc8813adf2282f926de",
+    priceWei: "45000000000000000",
+    metadataURI: "0g://mock-metadata-7",
+    isActive: true,
+    metadata: {
+      title: "Grant Proposal Optimizer",
+      category: "Writing",
+      shortDescription:
+        "Convert project ideas into high-signal grant proposals with milestone, budget, and impact sections.",
+      features: [
+        "Funding-fit analysis",
+        "Milestone planning",
+        "Impact statement generation",
+      ],
+      creatorHandle: "@GrantPilot",
+      icon: "sparkles",
+      promptTemplateRef: "0g://mock-template-7",
+      version: BASE_VERSION,
+    },
+  },
+  {
+    promptId: 8,
+    seller: "0x6dffdc02c85c0f15f41d28f6b7606bcf6f162098",
+    priceWei: "25000000000000000",
+    metadataURI: "0g://mock-metadata-8",
+    isActive: true,
+    metadata: {
+      title: "Solidity Unit Test Forge",
+      category: "Coding",
+      shortDescription:
+        "Generate high-coverage Foundry unit tests from contract source and edge-case scenarios.",
+      features: [
+        "Edge-case test generation",
+        "Invariant candidate list",
+        "Coverage gap suggestions",
+      ],
+      creatorHandle: "@ForgeGen",
+      icon: "code",
+      promptTemplateRef: "0g://mock-template-8",
+      version: BASE_VERSION,
+    },
+  },
+  {
+    promptId: 9,
+    seller: "0x3f3f7b4f7a1d8e2868b4d5ff9427a31f5a3fe6d2",
+    priceWei: "90000000000000000",
+    metadataURI: "0g://mock-metadata-9",
+    isActive: true,
+    metadata: {
+      title: "DeFi Risk Intelligence Engine",
+      category: "Research",
+      shortDescription:
+        "Assess DeFi protocol risk with attack-path mapping, liquidity stress tests, and mitigation recommendations.",
+      features: [
+        "Protocol risk score",
+        "Attack surface matrix",
+        "Mitigation plan output",
+      ],
+      creatorHandle: "@RiskLens",
+      icon: "shield",
+      promptTemplateRef: "0g://mock-template-9",
+      version: BASE_VERSION,
     },
   },
 ];
@@ -78,6 +212,7 @@ export const MOCK_TXS: TxRecord[] = [
     amountEth: "-0.12",
     status: "Success",
     txHash: "0x3f...82e1",
+    promptId: 4,
   },
   {
     id: "tx-2",
@@ -94,5 +229,32 @@ export const MOCK_TXS: TxRecord[] = [
     amountEth: "+1.50",
     status: "Pending",
     txHash: "0x8b...a49d",
+  },
+  {
+    id: "tx-4",
+    date: "2026-02-20T11:04:00.000Z",
+    action: "Prompt Listed",
+    amountEth: "+0.00",
+    status: "Success",
+    txHash: "0x91...f3e2",
+    promptId: 8,
+  },
+  {
+    id: "tx-5",
+    date: "2026-02-19T20:44:00.000Z",
+    action: "Prompt Purchase",
+    amountEth: "-0.08",
+    status: "Success",
+    txHash: "0x74...c8aa",
+    promptId: 3,
+  },
+  {
+    id: "tx-6",
+    date: "2026-02-19T14:13:00.000Z",
+    action: "Prompt Listed",
+    amountEth: "+0.00",
+    status: "Success",
+    txHash: "0x21...0bcf",
+    promptId: 7,
   },
 ];

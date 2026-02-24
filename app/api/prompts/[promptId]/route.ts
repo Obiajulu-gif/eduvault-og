@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import { indexMarketplaceData } from "@/lib/server/indexer";
+import { MOCK_PROMPTS } from "@/lib/mock-data";
+import { readMockPrompts } from "@/lib/server/mock-prompt-store";
 
 export const runtime = "nodejs";
 
@@ -11,7 +13,14 @@ export async function GET(_: Request, context: { params: { promptId: string } })
     }
 
     const indexed = await indexMarketplaceData();
-    const prompt = indexed.prompts.find((entry) => entry.promptId === promptId);
+    const localMockPrompts = await readMockPrompts();
+    const basePrompts = indexed.prompts.length > 0 ? indexed.prompts : MOCK_PROMPTS;
+    const localIds = new Set(localMockPrompts.map((entry) => entry.promptId));
+    const catalog = [
+      ...localMockPrompts,
+      ...basePrompts.filter((entry) => !localIds.has(entry.promptId)),
+    ];
+    const prompt = catalog.find((entry) => entry.promptId === promptId);
 
     if (!prompt) {
       return NextResponse.json({ error: "Prompt not found" }, { status: 404 });
